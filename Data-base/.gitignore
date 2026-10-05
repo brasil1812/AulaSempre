@@ -1,0 +1,12 @@
+# Ambientes e containers
+.env
+aulasempre_data/
+
+# IDE e editores
+.vscode/
+.idea/
+*.swp
+*~
+
+# Logs
+*.log

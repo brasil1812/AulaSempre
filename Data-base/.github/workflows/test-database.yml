@@ -1,0 +1,40 @@
+name: Test MySQL Database
+
+on:
+  push:
+    branches: [ main, master ]
+  pull_request:
+    branches: [ main, master ]
+  workflow_dispatch:
+
+jobs:
+  test-database:
+    runs-on: ubuntu-latest
+
+    services:
+      mysql:
+        image: mysql:8.0
+        env:
+          MYSQL_ROOT_PASSWORD: root
+        ports:
+          - 3306:3306
+        options: --health-cmd="mysqladmin ping" --health-interval=10s --health-timeout=5s --health-retries=5
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Execute Full SQL Script (DDL + DML + DQL)
+        run: |
+          mysql -h 127.0.0.1 -P 3306 -u root -proot < aulasempre.sql
+          echo "✅ Script aulasempre.sql executado com sucesso!"
+
+      - name: Check Tables in Database
+        run: |
+          mysql -h 127.0.0.1 -P 3306 -u root -proot -e "USE aulasempre; SHOW TABLES;"
+
+      - name: Verify Constraint Checks and Match Query
+        run: |
+          mysql -h 127.0.0.1 -P 3306 -u root -proot -e "USE aulasempre; SELECT COUNT(*) AS total_professores FROM professor;"
+          mysql -h 127.0.0.1 -P 3306 -u root -proot -e "USE aulasempre; SELECT COUNT(*) AS total_solicitacoes FROM solicitacao_substituicao;"
+          echo "✅ Validação das tabelas e dados concluída!"

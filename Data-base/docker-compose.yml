@@ -1,0 +1,16 @@
+services:
+  mysql:
+    image: mysql:8.0
+    container_name: aulasempre-mysql
+    restart: unless-stopped
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: aulasempre
+    ports:
+      - "3306:3306"
+    volumes:
+      - ./aulasempre.sql:/docker-entrypoint-initdb.d/01-aulasempre.sql:ro
+      - aulasempre_data:/var/lib/mysql
+
+volumes:
+  aulasempre_data:
