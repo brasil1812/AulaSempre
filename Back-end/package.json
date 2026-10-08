@@ -6,7 +6,12 @@
   "main": "src/server.js",
   "scripts": {
     "dev": "node --watch src/server.js",
-    "start": "node src/server.js"
+    "start": "node src/server.js",
+    "db:migrate": "node src/database/migrate.js",
+    "db:setup": "node src/database/setup.js",
+    "db:ensure": "node src/database/ensure.js",
+    "test": "node --test --test-concurrency=1 test/*.test.js",
+    "test:e2e": "node --test test/browser.e2e.js"
   },
   "dependencies": {
     "bcryptjs": "^2.4.3",
@@ -15,5 +20,8 @@
     "express": "^4.21.2",
     "jsonwebtoken": "^9.0.2",
     "mysql2": "^3.11.5"
+  },
+  "devDependencies": {
+    "playwright": "^1.64.0"
   }
 }

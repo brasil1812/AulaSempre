@@ -195,6 +195,13 @@ CREATE TABLE solicitacao_substituicao (
     horario_fim TIME NOT NULL,
     turma VARCHAR(50) NOT NULL,
     observacoes TEXT NULL,
+    modalidade ENUM('PRESENCIAL', 'ONLINE') NOT NULL DEFAULT 'PRESENCIAL',
+    cidade VARCHAR(100) NULL,
+    endereco VARCHAR(255) NULL,
+    valor DECIMAL(10,2) NULL,
+    conteudo TEXT NULL,
+    formacao_minima VARCHAR(100) NULL,
+    experiencia_minima INT NOT NULL DEFAULT 0,
     status ENUM('ABERTA', 'EM_PROCESSO', 'PREENCHIDA', 'CONCLUIDA', 'CANCELADA') NOT NULL DEFAULT 'ABERTA',
     data_criacao DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
     CONSTRAINT pk_solicitacao PRIMARY KEY (id_solicitacao),
@@ -210,7 +217,9 @@ CREATE TABLE solicitacao_substituicao (
         REFERENCES nivel_ensino (id_nivel_ensino)
         ON DELETE RESTRICT
         ON UPDATE CASCADE,
-    CONSTRAINT chk_solic_horario CHECK (horario_inicio < horario_fim)
+    CONSTRAINT chk_solic_horario CHECK (horario_inicio < horario_fim),
+    CONSTRAINT chk_solic_valor CHECK (valor IS NULL OR valor >= 0),
+    CONSTRAINT chk_solic_experiencia CHECK (experiencia_minima >= 0)
 ) ENGINE=InnoDB;
 
 -- TABELA: convite
@@ -248,6 +257,8 @@ CREATE TABLE substituicao (
     horario_fim TIME NOT NULL,
     status ENUM('AGENDADA', 'EM_ANDAMENTO', 'REALIZADA', 'CANCELADA', 'FALTA_PROFESSOR') NOT NULL DEFAULT 'AGENDADA',
     observacoes TEXT NULL,
+    active_request_id INT NULL,
+    CONSTRAINT uq_substituicao_ativa UNIQUE (active_request_id),
     CONSTRAINT pk_substituicao PRIMARY KEY (id_substituicao),
     CONSTRAINT fk_substituicao_solicitacao FOREIGN KEY (id_solicitacao)
         REFERENCES solicitacao_substituicao (id_solicitacao)
@@ -297,6 +308,12 @@ CREATE INDEX idx_escola_cidade_uf ON escola (cidade, estado);
 -- Otimização do algoritmo de Match (filtro de professores por cidade/status)
 CREATE INDEX idx_professor_status_cidade ON professor (status, cidade, estado);
 
+-- Mantém a chave de unicidade sem depender de coluna gerada sobre uma FK com CASCADE.
+CREATE TRIGGER tr_substituicao_ativa_insert BEFORE INSERT ON substituicao FOR EACH ROW
+SET NEW.active_request_id = IF(NEW.status IN ('AGENDADA', 'EM_ANDAMENTO'), NEW.id_solicitacao, NULL);
+CREATE TRIGGER tr_substituicao_ativa_update BEFORE UPDATE ON substituicao FOR EACH ROW
+SET NEW.active_request_id = IF(NEW.status IN ('AGENDADA', 'EM_ANDAMENTO'), NEW.id_solicitacao, NULL);
+
 -- Otimização para filtros de agenda e cruzamento de disponibilidade
 CREATE INDEX idx_disp_prof_dia_horario ON disponibilidade (dia_semana, horario_inicio, horario_fim, ativo);
 
@@ -326,15 +343,15 @@ INSERT INTO escola (nome, cnpj, email, telefone, cidade, estado, endereco) VALUE
 -- Inserção de 8 Usuários (3 gestores de escola e 5 professores)
 INSERT INTO usuario (id_escola, nome, email, senha, telefone, tipo_usuario) VALUES
 -- Usuários de Escolas
-(1, 'Renata Vasconcellos (Coordenação SP)', 'renata.coord@colegiosaopaulo.com.br', '$2y$10$e8wF9q6h9J9zL7T8yG0rP.u1A7B3c6E9F0G1H2I3J4K5L6M7N8O9P', '(11) 98765-1111', 'ESCOLA'),
-(2, 'Carlos Eduardo (Diretor Dom Bosco)', 'carlos.direcao@domboscoedu.com.br', '$2y$10$e8wF9q6h9J9zL7T8yG0rP.u1A7B3c6E9F0G1H2I3J4K5L6M7N8O9P', '(11) 98765-2222', 'ESCOLA'),
-(3, 'Mariana Fontes (RH Campinas)', 'mariana.rh@modernacampinas.com.br', '$2y$10$e8wF9q6h9J9zL7T8yG0rP.u1A7B3c6E9F0G1H2I3J4K5L6M7N8O9P', '(19) 98765-3333', 'ESCOLA'),
+(1, 'Renata Vasconcellos (Coordenação SP)', 'renata.coord@colegiosaopaulo.com.br', '$2a$10$31sA3gf2tnv81j8b6vhed.al6MfcYubQBgSJgi9R3ovbY9uOucbHC', '(11) 98765-1111', 'ESCOLA'),
+(2, 'Carlos Eduardo (Diretor Dom Bosco)', 'carlos.direcao@domboscoedu.com.br', '$2a$10$31sA3gf2tnv81j8b6vhed.al6MfcYubQBgSJgi9R3ovbY9uOucbHC', '(11) 98765-2222', 'ESCOLA'),
+(3, 'Mariana Fontes (RH Campinas)', 'mariana.rh@modernacampinas.com.br', '$2a$10$31sA3gf2tnv81j8b6vhed.al6MfcYubQBgSJgi9R3ovbY9uOucbHC', '(19) 98765-3333', 'ESCOLA'),
 -- Usuários Professores
-(NULL, 'Lucas Silva Martins', 'lucas.matematica@gmail.com', '$2y$10$e8wF9q6h9J9zL7T8yG0rP.u1A7B3c6E9F0G1H2I3J4K5L6M7N8O9P', '(11) 97111-0001', 'PROFESSOR'),
-(NULL, 'Beatriz Albuquerque Lima', 'beatriz.letras@gmail.com', '$2y$10$e8wF9q6h9J9zL7T8yG0rP.u1A7B3c6E9F0G1H2I3J4K5L6M7N8O9P', '(11) 97222-0002', 'PROFESSOR'),
-(NULL, 'Rodrigo Mendes de Oliveira', 'rodrigo.fisica@gmail.com', '$2y$10$e8wF9q6h9J9zL7T8yG0rP.u1A7B3c6E9F0G1H2I3J4K5L6M7N8O9P', '(11) 97333-0003', 'PROFESSOR'),
-(NULL, 'Camila Rocha Nogueira', 'camila.historia@gmail.com', '$2y$10$e8wF9q6h9J9zL7T8yG0rP.u1A7B3c6E9F0G1H2I3J4K5L6M7N8O9P', '(19) 97444-0004', 'PROFESSOR'),
-(NULL, 'Fernando Costa Guimarães', 'fernando.biologia@gmail.com', '$2y$10$e8wF9q6h9J9zL7T8yG0rP.u1A7B3c6E9F0G1H2I3J4K5L6M7N8O9P', '(11) 97555-0005', 'PROFESSOR');
+(NULL, 'Lucas Silva Martins', 'lucas.matematica@gmail.com', '$2a$10$31sA3gf2tnv81j8b6vhed.al6MfcYubQBgSJgi9R3ovbY9uOucbHC', '(11) 97111-0001', 'PROFESSOR'),
+(NULL, 'Beatriz Albuquerque Lima', 'beatriz.letras@gmail.com', '$2a$10$31sA3gf2tnv81j8b6vhed.al6MfcYubQBgSJgi9R3ovbY9uOucbHC', '(11) 97222-0002', 'PROFESSOR'),
+(NULL, 'Rodrigo Mendes de Oliveira', 'rodrigo.fisica@gmail.com', '$2a$10$31sA3gf2tnv81j8b6vhed.al6MfcYubQBgSJgi9R3ovbY9uOucbHC', '(11) 97333-0003', 'PROFESSOR'),
+(NULL, 'Camila Rocha Nogueira', 'camila.historia@gmail.com', '$2a$10$31sA3gf2tnv81j8b6vhed.al6MfcYubQBgSJgi9R3ovbY9uOucbHC', '(19) 97444-0004', 'PROFESSOR'),
+(NULL, 'Fernando Costa Guimarães', 'fernando.biologia@gmail.com', '$2a$10$31sA3gf2tnv81j8b6vhed.al6MfcYubQBgSJgi9R3ovbY9uOucbHC', '(11) 97555-0005', 'PROFESSOR');
 
 -- Inserção dos 5 Professores (associados aos usuários 4 a 8)
 INSERT INTO professor (id_usuario, nome_profissional, descricao, anos_experiencia, cidade, estado, status) VALUES
@@ -424,11 +441,11 @@ INSERT INTO disponibilidade (id_professor, dia_semana, horario_inicio, horario_f
 -- Inserção de Solicitações de Substituição
 INSERT INTO solicitacao_substituicao (id_escola, id_disciplina, id_nivel_ensino, data_aula, horario_inicio, horario_fim, turma, observacoes, status, data_criacao) VALUES
 -- Solicitação 1: Matemática no Colégio São Paulo (Compatível com Lucas e Rodrigo)
-(1, 1, 4, '2026-09-21', '07:30:00', '11:30:00', '3º Ano B - Médio', 'Professor titular teve consulta médica inesperada. Conteúdo: Geometria Analítica.', 'ABERTA', '2026-09-16 08:00:00'),
+(1, 1, 4, '2026-11-02', '07:30:00', '11:30:00', '3º Ano B - Médio', 'Professor titular teve consulta médica inesperada. Conteúdo: Geometria Analítica.', 'EM_PROCESSO', '2026-09-16 08:00:00'),
 -- Solicitação 2: Língua Portuguesa no Dom Bosco (Compatível com Beatriz)
-(2, 2, 4, '2026-09-22', '08:00:00', '10:00:00', '1º Ano A - Médio', 'Afastamento por licença curta. Conteúdo: Modernismo literário.', 'EM_PROCESSO', '2026-09-16 09:30:00'),
+(2, 2, 4, '2026-11-03', '08:00:00', '10:00:00', '1º Ano A - Médio', 'Afastamento por licença curta. Conteúdo: Modernismo literário.', 'PREENCHIDA', '2026-09-16 09:30:00'),
 -- Solicitação 3: História na Academia Moderna de Campinas (Compatível com Camila)
-(3, 6, 3, '2026-09-24', '08:30:00', '11:00:00', '8º Ano Fundamental', 'Falta abonada. Conteúdo: Revolução Industrial.', 'ABERTA', '2026-09-16 10:15:00'),
+(3, 6, 3, '2026-11-05', '08:30:00', '11:00:00', '8º Ano Fundamental', 'Falta abonada. Conteúdo: Revolução Industrial.', 'ABERTA', '2026-09-16 10:15:00'),
 -- Solicitação 4: Física no Colégio São Paulo (Já realizada no passado)
 (1, 3, 4, '2026-09-14', '08:00:00', '11:00:00', '2º Ano Médio', 'Substituição pontual emergencial concluída com sucesso.', 'CONCLUIDA', '2026-09-12 14:00:00'),
 -- Solicitação 5: Biologia no Colégio São Paulo (Já realizada no passado)
@@ -451,7 +468,7 @@ INSERT INTO substituicao (id_solicitacao, id_professor, id_convite, data_substit
 -- Substituição 2 (Passada - Prof. Fernando no Colégio SP)
 (5, 5, 4, '2026-09-11', '08:00:00', '11:30:00', 'REALIZADA', 'Excelente aula de Biologia Molecular.'),
 -- Substituição 3 (Futura - Profª. Beatriz no Dom Bosco)
-(2, 2, 2, '2026-09-22', '08:00:00', '10:00:00', 'AGENDADA', 'Aguardando data prevista para execução.');
+(2, 2, 2, '2026-11-03', '08:00:00', '10:00:00', 'AGENDADA', 'Aguardando data prevista para execução.');
 
 -- Inserção de Avaliações
 INSERT INTO avaliacao (id_substituicao, id_professor, nota, comentario, data_avaliacao) VALUES

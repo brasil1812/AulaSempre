@@ -1,0 +1,13 @@
+{
+  "name": "aulasempre-workspace",
+  "private": true,
+  "scripts": {
+    "install:all": "npm --prefix Back-end ci && npm --prefix Front-end ci",
+    "build": "npm --prefix Front-end run build",
+    "start": "npm --prefix Back-end start",
+    "dev:api": "npm --prefix Back-end run dev",
+    "dev:front": "npm --prefix Front-end start",
+    "db:ensure": "npm --prefix Back-end run db:ensure",
+    "test": "npm --prefix Back-end test && npm run build && npm --prefix Back-end run test:e2e"
+  }
+}

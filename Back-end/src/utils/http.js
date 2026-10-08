@@ -4,7 +4,7 @@ export function asyncHandler(fn) {
 
 export function requireFields(body, fields) {
   const missing = fields.filter((field) =>
-    body[field] === undefined || body[field] === null || body[field] === ""
+    body?.[field] === undefined || body[field] === null || body[field] === ""
   );
 
   if (missing.length) {
@@ -12,4 +12,21 @@ export function requireFields(body, fields) {
     error.status = 400;
     throw error;
   }
+}
+
+export function httpError(status, message) {
+  return Object.assign(new Error(message), { status });
+}
+
+export async function transaction(pool, action) {
+  const connection = await pool.getConnection();
+  try {
+    await connection.beginTransaction();
+    const result = await action(connection);
+    await connection.commit();
+    return result;
+  } catch (error) {
+    await connection.rollback();
+    throw error;
+  } finally { connection.release(); }
 }

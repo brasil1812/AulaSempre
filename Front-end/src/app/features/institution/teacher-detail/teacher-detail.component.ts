@@ -4,6 +4,7 @@ import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { AppStateService } from '../../../core/services/app-state.service';
 import { Teacher } from '../../../core/models/app.models';
+import { errorMessage } from '../../../core/services/api.service';
 
 @Component({
   selector: 'app-teacher-detail',
@@ -80,6 +81,7 @@ import { Teacher } from '../../../core/models/app.models';
 
       <!-- Right: invite -->
       <div class="invite-panel card">
+        @if (error()) { <p class="form-error" role="alert">{{error()}}</p> }
         <h3 class="invite-title">Convidar para substituição</h3>
 
         @if (openRequests().length === 0) {
@@ -99,7 +101,7 @@ import { Teacher } from '../../../core/models/app.models';
           @if (invited()) {
             <div class="invite-success">✓ Convite enviado! Aguardando resposta do professor.</div>
           } @else {
-            <button class="btn btn--primary btn--block" [disabled]="!selectedId || !teacher.disponivel" (click)="sendInvite()">
+            <button class="btn btn--primary btn--block" [disabled]="!selectedId || !teacher.disponivel || busy()" (click)="sendInvite()">
               {{!teacher.disponivel ? 'Professor indisponível' : !selectedId ? 'Selecione uma solicitação' : 'Enviar convite'}}
             </button>
           }
@@ -149,9 +151,11 @@ import { Teacher } from '../../../core/models/app.models';
   `],
 })
 export class TeacherDetailComponent implements OnInit {
-  teacher: Teacher | undefined;
+  get teacher(): Teacher | undefined { return this.appState.teachers.find(t => t.id === this.route.snapshot.paramMap.get('id')); }
   selectedId = '';
   invited = signal(false);
+  busy = signal(false);
+  error = signal('');
 
   constructor(
     private route: ActivatedRoute,
@@ -160,17 +164,20 @@ export class TeacherDetailComponent implements OnInit {
   ) {}
 
   ngOnInit() {
-    const id = this.route.snapshot.paramMap.get('id');
-    this.teacher = this.appState.teachers.find(t => t.id === id);
+    void this.appState.retry();
   }
 
-  openRequests() { return this.appState.requests.filter(r => r.status === 'aberta'); }
+  openRequests() { return this.appState.requests.filter(r => ['aberta','aguardando'].includes(r.status)); }
 
-  sendInvite() {
-    if (!this.selectedId || !this.teacher) return;
-    this.appState.inviteTeacher(this.selectedId, this.teacher.id, this.teacher.nome);
+  async sendInvite() {
+    if (!this.selectedId || !this.teacher || this.busy()) return;
+    this.busy.set(true); this.error.set('');
+    try {
+    await this.appState.inviteTeacher(this.selectedId, this.teacher.id, this.teacher.nome);
     this.invited.set(true);
     setTimeout(() => this.router.navigateByUrl('/instituicao/solicitacoes'), 2000);
+    } catch (e) { this.error.set(errorMessage(e)); }
+    finally { this.busy.set(false); }
   }
 
   avatarCls() {

@@ -23,6 +23,14 @@ export interface SubRequest {
   criadaEm: string;
   instituicaoNome: string;
   recusadoPorIds: string[];
+  inviteId?: string;
+  substitutionId?: string;
+  substitutionStatus?: string;
+  invitedTeacherIds?: string[];
+  notaAvaliacao?: number;
+  conteudo?: string;
+  formacaoMinima?: string;
+  experienciaMinima?: number;
 }
 
 export interface Teacher {

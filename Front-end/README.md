@@ -1,59 +1,23 @@
-# Aulasempre
+# Interface AulaSempre
 
-This project was generated using [Angular CLI](https://github.com/angular/angular-cli) version 22.2.0.
+Interface Angular integrada à API Express e ao banco MySQL. Consulte `../README.md` para iniciar o projeto completo.
 
-## Development server
+Na pasta Front-end:
 
-To start a local development server, run:
-
-```bash
-ng serve
+```powershell
+npm ci
+npm start
 ```
 
-Once the server is running, open your browser and navigate to `http://localhost:4200/`. The application will automatically reload whenever you modify any of the source files.
+A interface abre em http://localhost:4200. A configuração `proxy.conf.json` encaminha `/api` para http://127.0.0.1:3000. Inicie também a API e o MySQL.
 
-## Code scaffolding
-
-Angular CLI includes powerful code scaffolding tools. To generate a new component, run:
-
-```bash
-ng generate component component-name
+```powershell
+npm run build
+npm test
 ```
 
-For a complete list of available schematics (such as `components`, `directives`, or `pipes`), run:
+A compilação gera `dist/aulasempre/browser`, servido pela API na porta 3000. O teste recompila a interface e executa o fluxo de navegador da pasta Back-end com MySQL real e bancos temporários.
 
-```bash
-ng generate --help
-```
+As rotas privadas verificam a sessão e o perfil. O estado real é carregado da API e as ações aguardam a gravação antes de mostrar sucesso. A demonstração em `/demo` é identificada na tela e tem armazenamento separado.
 
-## Building
-
-To build the project run:
-
-```bash
-ng build
-```
-
-This will compile your project and store the build artifacts in the `dist/` directory. By default, the production build optimizes your application for performance and speed.
-
-## Running unit tests
-
-To execute unit tests with the [Vitest](https://vitest.dev/) test runner, use the following command:
-
-```bash
-ng test
-```
-
-## Running end-to-end tests
-
-For end-to-end (e2e) testing, run:
-
-```bash
-ng e2e
-```
-
-Angular CLI does not come with an end-to-end testing framework by default. You can choose one that suits your needs.
-
-## Additional Resources
-
-For more information on using the Angular CLI, including detailed command references, visit the [Angular CLI Overview and Command Reference](https://angular.dev/tools/cli) page.
+Professores completam disciplinas, níveis, formação e horários em **Meu perfil**. Escolas criam solicitações, buscam professores compatíveis, enviam convites e concluem e avaliam as aulas.

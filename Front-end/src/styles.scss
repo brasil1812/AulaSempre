@@ -184,10 +184,21 @@ img { max-width: 100%; display: block; }
 }
 .app-content {
   flex: 1; overflow-y: auto;
+  min-width: 0;
   background: var(--color-bg);
 }
 .page-content {
   padding: 32px; max-width: 1100px; margin: 0 auto;
+}
+
+@media (max-width: 768px) {
+  .app-layout { flex-direction: column; }
+  .app-layout > aside.sidebar { width: 100%; min-height: auto; border-right: 0; }
+  .app-layout .sidebar .sidebar__nav { flex-direction: row; flex-wrap: wrap; }
+  .app-layout .sidebar .sidebar__link { flex: 1 1 150px; }
+  .app-layout .sidebar .sidebar__footer { display: flex; flex-wrap: wrap; align-items: center; }
+  .app-layout .sidebar .sidebar__footer > button { width: auto; }
+  .page-content { padding: 20px 16px; }
 }
 
 // ── Stat card ────────────────────────────────────────────────

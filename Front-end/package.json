@@ -6,7 +6,7 @@
     "start": "ng serve",
     "build": "ng build",
     "watch": "ng build --watch --configuration development",
-    "test": "ng test"
+    "test": "npm run build && npm --prefix ../Back-end run test:e2e"
   },
   "private": true,
   "packageManager": "npm@11.12.1",

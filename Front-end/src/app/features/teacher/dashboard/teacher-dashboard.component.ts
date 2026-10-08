@@ -142,7 +142,7 @@ import { SubRequest } from '../../../core/models/app.models';
   `],
 })
 export class TeacherDashboardComponent {
-  constructor(private router: Router, private appState: AppStateService) {}
+  constructor(private router: Router, private appState: AppStateService) { void appState.retry(); }
 
   get teacher() { return this.appState.currentTeacher; }
 

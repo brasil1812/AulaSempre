@@ -39,11 +39,14 @@ Body:
 {
   "id_disciplina": 1,
   "id_nivel_ensino": 4,
-  "data_aula": "2026-09-21",
+  "data_aula": "2026-11-02",
   "horario_inicio": "07:30:00",
   "horario_fim": "11:30:00",
   "turma": "3º Ano B - Médio",
-  "observacoes": "Geometria Analítica."
+  "observacoes": "Geometria Analítica.",
+  "modalidade": "PRESENCIAL",
+  "cidade": "São Paulo",
+  "valor": 150.00
 }
 ```
 

@@ -3,11 +3,16 @@ services:
     image: mysql:8.0
     container_name: aulasempre-mysql
     restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "127.0.0.1"]
+      interval: 5s
+      timeout: 3s
+      retries: 20
     environment:
-      MYSQL_ROOT_PASSWORD: root
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD:-root}
       MYSQL_DATABASE: aulasempre
     ports:
-      - "3306:3306"
+      - "127.0.0.1:3306:3306"
     volumes:
       - ./aulasempre.sql:/docker-entrypoint-initdb.d/01-aulasempre.sql:ro
       - aulasempre_data:/var/lib/mysql

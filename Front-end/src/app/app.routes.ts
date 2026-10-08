@@ -1,4 +1,5 @@
 import { Routes } from '@angular/router';
+import { roleGuard } from './core/auth.guard';
 
 export const routes: Routes = [
   // Public
@@ -21,6 +22,8 @@ export const routes: Routes = [
   // Institution area
   {
     path: 'instituicao',
+    canActivate: [roleGuard],
+    data: { role: 'instituicao' },
     loadComponent: () =>
       import('./features/institution/layout/institution-layout.component').then(m => m.InstitutionLayoutComponent),
     children: [
@@ -55,6 +58,8 @@ export const routes: Routes = [
   // Teacher area
   {
     path: 'professor',
+    canActivate: [roleGuard],
+    data: { role: 'professor' },
     loadComponent: () =>
       import('./features/teacher/layout/teacher-layout.component').then(m => m.TeacherLayoutComponent),
     children: [
@@ -67,6 +72,10 @@ export const routes: Routes = [
         path: 'convites',
         loadComponent: () =>
           import('./features/teacher/invites/teacher-invites.component').then(m => m.TeacherInvitesComponent),
+      },
+      {
+        path: 'perfil',
+        loadComponent: () => import('./features/teacher/profile/teacher-profile.component').then(m => m.TeacherProfileComponent),
       },
       {
         path: 'confirmadas',

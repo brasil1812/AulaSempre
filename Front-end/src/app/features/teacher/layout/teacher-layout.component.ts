@@ -22,6 +22,7 @@ import { AppStateService } from '../../../core/services/app-state.service';
     </div>
 
     <nav class="sidebar__nav">
+      <a routerLink="/professor/perfil" routerLinkActive="sidebar__link--active" class="sidebar__link"><span>👤</span><span class="sidebar__link-label">Meu perfil</span></a>
       <a [routerLink]="'/professor'" routerLinkActive="sidebar__link--active"
         [routerLinkActiveOptions]="{exact:true}" class="sidebar__link">
         <span class="sidebar__link-icon">🏠</span>
@@ -39,6 +40,7 @@ import { AppStateService } from '../../../core/services/app-state.service';
     </nav>
 
     <div class="sidebar__footer">
+      <button class="sidebar__logout" (click)="appState.retry()">↻ Atualizar dados</button>
       <div class="sidebar__user">
         <div class="sidebar__avatar sidebar__avatar--green">{{teacherInitials}}</div>
         <div class="sidebar__user-info">
@@ -82,7 +84,7 @@ import { AppStateService } from '../../../core/services/app-state.service';
   `],
 })
 export class TeacherLayoutComponent {
-  constructor(private router: Router, private appState: AppStateService) {}
+  constructor(private router: Router, public appState: AppStateService) {}
 
   get teacherName() { return this.appState.currentTeacher.nome; }
   get teacherInitials() { return this.appState.currentTeacher.initials; }
@@ -91,5 +93,5 @@ export class TeacherLayoutComponent {
       r.status === 'aguardando' && r.professorConvidadoId === this.appState.currentTeacher.id
     ).length;
   }
-  logout() { this.router.navigateByUrl('/'); }
+  logout() { this.appState.logout(); this.router.navigateByUrl('/'); }
 }

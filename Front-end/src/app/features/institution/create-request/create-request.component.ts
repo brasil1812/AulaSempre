@@ -3,10 +3,9 @@ import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { AppStateService } from '../../../core/services/app-state.service';
+import { errorMessage } from '../../../core/services/api.service';
 
 const STEPS = ['Dados da aula', 'Data e horário', 'Requisitos', 'Revisão'];
-const DISCIPLINAS = ['Matemática','Português','Ciências','Física','Química','Biologia','História','Geografia','Inglês','Educação Física','Artes','Filosofia','Sociologia','Outra'];
-const NIVEIS = ['Educação Infantil','Ensino Fundamental I','Ensino Fundamental II','Ensino Médio','Ensino Superior'];
 const FORMACOES = ['Qualquer licenciatura','Licenciatura completa na área','Pós-graduação na área','Mestrado ou Doutorado'];
 const EXPERIENCIAS = ['Qualquer experiência','Pelo menos 1 ano','Pelo menos 2 anos','Pelo menos 5 anos'];
 
@@ -184,6 +183,7 @@ const EXPERIENCIAS = ['Qualquer experiência','Pelo menos 1 ano','Pelo menos 2 a
       }
 
       <!-- Navigation buttons -->
+      @if (error()) { <p class="form-error" role="alert">{{error()}}</p> }
       <div class="wizard-btns">
         @if (step() > 0) {
           <button class="btn btn--secondary" (click)="prev()">Voltar</button>
@@ -191,7 +191,7 @@ const EXPERIENCIAS = ['Qualquer experiência','Pelo menos 1 ano','Pelo menos 2 a
         @if (step() < 3) {
           <button class="btn btn--primary" style="flex:1" (click)="next()">Continuar</button>
         } @else {
-          <button class="btn btn--primary" style="flex:1" (click)="submit()">Publicar solicitação</button>
+          <button class="btn btn--primary" style="flex:1" [disabled]="saving()" (click)="submit()">{{saving() ? 'Publicando…' : 'Publicar solicitação'}}</button>
         }
       </div>
     </div>
@@ -247,13 +247,15 @@ const EXPERIENCIAS = ['Qualquer experiência','Pelo menos 1 ano','Pelo menos 2 a
 })
 export class CreateRequestComponent {
   steps = STEPS;
-  disciplinas = DISCIPLINAS;
-  niveis = NIVEIS;
+  get disciplinas() { return this.appState.disciplines().map(item => item.nome); }
+  get niveis() { return this.appState.levels().map(item => item.nome); }
   formacoes = FORMACOES;
   experiencias = EXPERIENCIAS;
 
   step = signal(0);
   submitted = signal(false);
+  saving = signal(false);
+  error = signal('');
   touched0 = signal(false);
   touched1 = signal(false);
   touched2 = signal(false);
@@ -262,7 +264,7 @@ export class CreateRequestComponent {
   step1Form: FormGroup;
   step2Form: FormGroup;
 
-  get today() { return new Date().toISOString().split('T')[0]; }
+  get today() { return new Intl.DateTimeFormat('en-CA', {timeZone:'America/Sao_Paulo',year:'numeric',month:'2-digit',day:'2-digit'}).format(new Date()); }
 
   constructor(private fb: FormBuilder, private router: Router, private appState: AppStateService) {
     this.step0Form = this.fb.group({
@@ -280,7 +282,7 @@ export class CreateRequestComponent {
       endereco: [''],
     });
     this.step2Form = this.fb.group({
-      valor: ['', Validators.required],
+      valor: ['', [Validators.required, Validators.min(0), Validators.max(99999999.99)]],
       formacao: [''],
       experiencia: [''],
       observacoes: [''],
@@ -292,12 +294,14 @@ export class CreateRequestComponent {
   err2(f: string) { return this.touched2() && this.step2Form.get(f)?.invalid; }
 
   next() {
+    this.error.set('');
     if (this.step() === 0) {
       this.touched0.set(true);
       if (this.step0Form.invalid) return;
     } else if (this.step() === 1) {
       this.touched1.set(true);
       if (this.step1Form.invalid) return;
+      if (!this.validSchedule()) return;
     } else if (this.step() === 2) {
       this.touched2.set(true);
       if (this.step2Form.invalid) return;
@@ -308,19 +312,34 @@ export class CreateRequestComponent {
   prev() { this.step.update(s => s - 1); }
   stepBack() { this.step() > 0 ? this.prev() : this.go('/instituicao'); }
 
-  submit() {
+  private validSchedule(): boolean {
+    const value = this.step1Form.value;
+    if (value.data < this.today) { this.error.set('A data não pode estar no passado.'); return false; }
+    if (value.horarioFim <= value.horarioInicio) { this.error.set('O término deve ser posterior ao início.'); return false; }
+    if (value.modalidade === 'presencial' && !value.cidade?.trim()) { this.error.set('Informe a cidade da aula.'); return false; }
+    return true;
+  }
+
+  async submit() {
+    if (this.saving()) return;
     this.touched2.set(true);
-    if (this.step2Form.invalid) return;
+    if (this.step0Form.invalid || this.step1Form.invalid || this.step2Form.invalid || !this.validSchedule()) return;
+    this.saving.set(true); this.error.set('');
     const s0 = this.step0Form.value;
     const s1 = this.step1Form.value;
     const s2 = this.step2Form.value;
-    this.appState.createRequest({
-      disciplina: s0.disciplina, nivel: s0.nivel, turma: s0.turma, observacoes: s2.observacoes || s0.conteudo,
+    try {
+    await this.appState.createRequest({
+      disciplina: s0.disciplina, nivel: s0.nivel, turma: s0.turma, observacoes: s2.observacoes, conteudo: s0.conteudo,
       data: s1.data, horarioInicio: s1.horarioInicio, horarioFim: s1.horarioFim,
       modalidade: s1.modalidade, cidade: s1.cidade, endereco: s1.endereco,
       valor: s2.valor, instituicaoNome: this.appState.currentInstitution.nome,
+      formacaoMinima: s2.formacao,
+      experienciaMinima: s2.experiencia.includes('5 anos') ? 5 : s2.experiencia.includes('2 anos') ? 2 : s2.experiencia.includes('1 ano') ? 1 : 0,
     });
     this.submitted.set(true);
+    } catch (error) { this.error.set(errorMessage(error)); }
+    finally { this.saving.set(false); }
   }
 
   get reviewItems(): [string, string][] {

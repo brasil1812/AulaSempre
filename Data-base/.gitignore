@@ -1,6 +1,7 @@
 # Ambientes e containers
 .env
 aulasempre_data/
+.runtime/
 
 # IDE e editores
 .vscode/

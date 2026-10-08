@@ -1,19 +1,21 @@
-# AulaSempre — Banco de Dados MySQL 8.x
+# Banco AulaSempre
 
-Repositório oficial da modelagem e scripts do banco de dados da plataforma **AulaSempre** (Sistema Inteligente de Substituição de Professores).
+MySQL 8.x com tabelas, relações, índices, validações e dados fictícios de desenvolvimento. O arquivo canônico é `Data-base/aulasempre.sql`; `Back-end/aulasempre.sql` é uma cópia compatível.
 
----
+Para iniciar pelo Docker, nesta pasta:
 
-## 📁 Estrutura do Projeto
+```powershell
+docker compose up -d
+```
 
-```text
-aulasempre/
-├── .github/
-│   └── workflows/
-│       └── test-database.yml   # CI/CD: Validação automática do banco no GitHub
-├── aulasempre.sql              # Script SQL completo (DDL + DML + DQL)
-├── docker-compose.yml          # Ambiente MySQL pronto para rodar via Docker
-└── README.md                   # Documentação do projeto
+O script é aplicado somente na criação de um volume vazio. Ele contém `DROP TABLE` e não deve ser reaplicado sobre dados a preservar. A senha de desenvolvimento do banco é `root`, ajustável com `MYSQL_ROOT_PASSWORD`. Use a mesma senha em `Back-end/.env`.
 
+Para atualizar um banco existente, na raiz:
 
+```powershell
+npm --prefix Back-end run db:migrate
+```
 
+A migração acrescenta os campos da aula e proteções de integridade sem apagar registros. Modalidade, cidade, endereço, valor, conteúdo, formação e experiência são persistidos. A combinação de chave única e gatilhos impede duas substituições ativas na mesma solicitação. As transações da API também serializam aceites concorrentes.
+
+A senha dos usuários fictícios é `AulaSempre123!`. As contas e a inicialização completa estão descritas em `../README.md`. Os testes usam bancos separados, e a automação do repositório fica em `../.github/workflows/integration.yml`.

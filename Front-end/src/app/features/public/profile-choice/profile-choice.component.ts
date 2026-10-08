@@ -119,7 +119,7 @@ export class ProfileChoiceComponent implements OnInit {
   }
 
   select(role: 'professor' | 'instituicao') {
-    this.appState.setRole(role);
+    this.appState.startDemo(role);
     this.router.navigateByUrl(role === 'professor' ? '/professor' : '/instituicao');
   }
 }

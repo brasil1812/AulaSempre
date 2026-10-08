@@ -1,8 +1,9 @@
-import { Component } from '@angular/core';
+import { Component, signal } from '@angular/core';
 import { Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { AppStateService } from '../../../core/services/app-state.service';
 import { SubRequest } from '../../../core/models/app.models';
+import { errorMessage } from '../../../core/services/api.service';
 
 @Component({
   selector: 'app-teacher-invites',
@@ -10,6 +11,7 @@ import { SubRequest } from '../../../core/models/app.models';
   imports: [CommonModule],
   template: `
 <div class="page-content page-enter">
+  @if (error()) { <p class="form-error" role="alert">{{error()}}</p> }
   <div class="page-header">
     <h1 class="page-title">Convites recebidos</h1>
     <p class="page-sub">Aceite ou recuse convites de substituição</p>
@@ -78,10 +80,10 @@ import { SubRequest } from '../../../core/models/app.models';
               }
 
               <div class="actions-row">
-                <button class="btn btn--danger btn--lg" style="flex: 1;" (click)="decline(r.id)">
+                <button class="btn btn--danger btn--lg" style="flex: 1;" [disabled]="busy()" (click)="decline(r.id)">
                   Recusar convite
                 </button>
-                <button class="btn btn--success btn--lg" style="flex: 1;" (click)="accept(r.id)">
+                <button class="btn btn--success btn--lg" style="flex: 1;" [disabled]="busy()" (click)="accept(r.id)">
                   Aceitar convite
                 </button>
               </div>
@@ -102,7 +104,7 @@ import { SubRequest } from '../../../core/models/app.models';
                   <p class="history-card__sub">{{r.instituicaoNome}} · {{fmt(r.data)}}</p>
                 </div>
                 <span class="badge" [class.badge--confirmada]="r.status === 'confirmada'" [class.badge--recusada]="r.status !== 'confirmada'">
-                  {{r.status === 'confirmada' ? 'Aceito ✓' : 'Recusado'}}
+                  {{r.status === 'confirmada' ? 'Aceito' : r.status === 'concluida' ? 'Concluída' : r.status === 'cancelada' ? 'Cancelado' : 'Recusado'}}
                 </span>
               </div>
             </div>
@@ -162,7 +164,8 @@ import { SubRequest } from '../../../core/models/app.models';
   `],
 })
 export class TeacherInvitesComponent {
-  constructor(private appState: AppStateService, private router: Router) {}
+  error=signal(''); busy=signal(false);
+  constructor(private appState: AppStateService, private router: Router) { void appState.retry(); }
 
   get currentTeacher() { return this.appState.currentTeacher; }
 
@@ -180,12 +183,17 @@ export class TeacherInvitesComponent {
     return this.myInvites.filter(r => r.status !== 'aguardando');
   }
 
-  accept(requestId: string) {
-    this.appState.acceptInvite(requestId);
+  async accept(requestId: string) {
+    await this.answer(() => this.appState.acceptInvite(requestId));
   }
 
-  decline(requestId: string) {
-    this.appState.declineInvite(requestId);
+  async decline(requestId: string) {
+    await this.answer(() => this.appState.declineInvite(requestId));
+  }
+
+  private async answer(work: () => Promise<void>) {
+    if(this.busy())return;this.busy.set(true);this.error.set('');
+    try{await work();}catch(e){this.error.set(errorMessage(e));}finally{this.busy.set(false);}
   }
 
   fmt(data: string) {

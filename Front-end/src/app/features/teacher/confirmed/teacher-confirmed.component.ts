@@ -30,7 +30,7 @@ import { SubRequest } from '../../../core/models/app.models';
             <h3 class="confirmed-card__title">{{r.disciplina}}</h3>
             <p class="confirmed-card__sub">{{r.turma || r.nivel}} · {{r.instituicaoNome}}</p>
           </div>
-          <span class="badge badge--confirmada">✓ Confirmada</span>
+          <span class="badge badge--confirmada">{{r.status === 'concluida' ? 'Concluída' : '✓ Confirmada'}}</span>
         </div>
 
         <div class="details-grid">
@@ -100,13 +100,13 @@ import { SubRequest } from '../../../core/models/app.models';
   `],
 })
 export class TeacherConfirmedComponent {
-  constructor(private appState: AppStateService) {}
+  constructor(private appState: AppStateService) { void appState.retry(); }
 
   get currentTeacher() { return this.appState.currentTeacher; }
 
   get confirmed(): SubRequest[] {
     return this.appState.requests.filter(
-      r => r.status === 'confirmada' && r.professorConfirmadoId === this.currentTeacher.id
+      r => ['confirmada','concluida'].includes(r.status) && r.professorConfirmadoId === this.currentTeacher.id
     );
   }
 

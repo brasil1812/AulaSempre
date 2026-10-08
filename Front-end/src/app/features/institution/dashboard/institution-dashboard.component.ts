@@ -100,7 +100,7 @@ const STATUS_MAP: Record<string, { label: string; cls: string }> = {
   `],
 })
 export class InstitutionDashboardComponent {
-  constructor(private router: Router, public appState: AppStateService) {}
+  constructor(private router: Router, public appState: AppStateService) { void appState.retry(); }
 
   get requests(): SubRequest[] { return this.appState.requests; }
   get inst() { return this.appState.currentInstitution; }

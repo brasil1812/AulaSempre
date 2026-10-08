@@ -4,6 +4,7 @@ import { Router } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { AppStateService } from '../../../core/services/app-state.service';
 import { Teacher } from '../../../core/models/app.models';
+import { errorMessage } from '../../../core/services/api.service';
 
 const COLOR_MAP: Record<string, string> = {
   blue: 'avatar--blue',
@@ -37,7 +38,7 @@ const COLOR_MAP: Record<string, string> = {
   @if (openRequests().length > 0) {
     <div class="select-req-box">
       <p class="select-req-label">Qual solicitação deseja preencher?</p>
-      <select [(ngModel)]="selectedRequestId" class="form-input">
+      <select [(ngModel)]="selectedRequestId" (ngModelChange)="loadMatches()" class="form-input">
         <option value="">Selecione uma solicitação aberta...</option>
         <option *ngFor="let r of openRequests()" [value]="r.id">
           {{r.disciplina}} · {{r.turma || r.nivel}} · {{fmtDate(r.data)}} · {{r.horarioInicio}}–{{r.horarioFim}}
@@ -55,6 +56,8 @@ const COLOR_MAP: Record<string, string> = {
     </div>
   }
 
+    @if (error()) { <p class="form-error" role="alert">{{error()}}</p> }
+    @if (matching()) { <p role="status">Buscando professores compatíveis…</p> }
   <div class="search-layout">
     <!-- Filters -->
     <div class="filters-panel">
@@ -131,7 +134,7 @@ const COLOR_MAP: Record<string, string> = {
                   <button class="btn btn--secondary btn--sm" (click)="go('/instituicao/professor/'+t.id)">Ver perfil</button>
                   @if (t.disponivel && !isInvited(t.id)) {
                     <button class="btn btn--primary btn--sm"
-                      [disabled]="!selectedRequestId"
+                      [disabled]="!selectedRequestId || busy() || matching()"
                       (click)="invite(t.id, t.nome)">
                       {{selectedRequestId ? 'Convidar para substituição' : 'Selecione uma solicitação'}}
                     </button>
@@ -161,6 +164,7 @@ const COLOR_MAP: Record<string, string> = {
     .no-req-warning { display:flex; align-items:flex-start; gap:12px; background:#FFFBEB; border:1px solid #FDE68A; border-radius:14px; padding:14px 16px; margin-bottom:20px; font-size:24px; }
     .link-btn { font-size:13px; font-weight:600; color:#2563EB; &:hover{text-decoration:underline;} }
     .search-layout { display:flex; gap:24px; align-items:flex-start; }
+    @media(max-width:900px) { .search-layout { flex-direction:column; } .search-layout .filters-panel { width:100%; } }
     .filters-panel { width:220px; flex-shrink:0; background:#fff; border:1px solid #E2E8F0; border-radius:16px; padding:20px; box-shadow:0 1px 3px rgba(0,0,0,.05); }
     .filters-title { font-size:14px; font-weight:700; color:#0F172A; margin-bottom:16px; }
     .filter-group { margin-bottom:14px; }
@@ -214,16 +218,29 @@ export class SearchTeachersComponent {
   selectedRequestId = '';
   invitedId: string | null = null;
   success = signal<string | null>(null);
+  error = signal('');
+  busy = signal(false);
+  matching = signal(false);
+  matchIds = signal<string[] | null>(null);
 
   sortOptions = [
     { v: 'nota', l: 'Melhor avaliação' },
     { v: 'subs', l: 'Mais substituições' },
-    { v: 'dist', l: 'Mais próximo' },
+    { v: 'experiencia', l: 'Mais experiência' },
   ];
 
-  constructor(private router: Router, private appState: AppStateService) {}
+  constructor(private router: Router, private appState: AppStateService) { void appState.retry(); }
 
-  openRequests() { return this.appState.requests.filter(r => r.status === 'aberta'); }
+  openRequests() { return this.appState.requests.filter(r => ['aberta','aguardando'].includes(r.status)); }
+
+  async loadMatches() {
+    const id = this.selectedRequestId; this.matchIds.set(null); this.error.set(''); this.invitedId = null;
+    if (!id) { this.matching.set(false); return; }
+    this.matching.set(true);
+    try { const ids = await this.appState.compatibleTeachers(id); if (id === this.selectedRequestId) this.matchIds.set(ids); }
+    catch (e) { if (id === this.selectedRequestId) this.error.set(errorMessage(e)); }
+    finally { if (id === this.selectedRequestId) this.matching.set(false); }
+  }
 
   allDisciplinas() {
     return Array.from(new Set(this.appState.teachers.flatMap(t => t.disciplinas))).sort();
@@ -233,6 +250,7 @@ export class SearchTeachersComponent {
     const selectedReq = this.openRequests().find(r => r.id === this.selectedRequestId);
     return this.appState.teachers
       .filter(t => {
+        if (selectedReq && !this.matchIds()?.includes(t.id)) return false;
         if (this.filterAvail && !t.disponivel) return false;
         if (this.filterDisciplina && !t.disciplinas.includes(this.filterDisciplina)) return false;
         if (this.search) {
@@ -245,22 +263,26 @@ export class SearchTeachersComponent {
       .sort((a, b) => {
         if (this.sortBy === 'nota') return b.nota - a.nota;
         if (this.sortBy === 'subs') return b.subs - a.subs;
-        return parseFloat(a.distancia) - parseFloat(b.distancia);
+        return b.experiencia - a.experiencia;
       });
   }
 
   isInvited(id: string) {
     if (this.invitedId === id) return true;
     const selectedReq = this.openRequests().find(r => r.id === this.selectedRequestId);
-    return selectedReq?.professorConvidadoId === id && selectedReq?.status === 'aguardando';
+    return selectedReq?.invitedTeacherIds?.includes(id) || selectedReq?.professorConvidadoId === id;
   }
 
-  invite(teacherId: string, teacherNome: string) {
-    if (!this.selectedRequestId) return;
-    this.appState.inviteTeacher(this.selectedRequestId, teacherId, teacherNome);
+  async invite(teacherId: string, teacherNome: string) {
+    if (!this.selectedRequestId || this.busy()) return;
+    this.busy.set(true); this.error.set('');
+    try {
+    await this.appState.inviteTeacher(this.selectedRequestId, teacherId, teacherNome);
     this.invitedId = teacherId;
     this.success.set(`Convite enviado para ${teacherNome}! Aguardando resposta.`);
     setTimeout(() => this.router.navigateByUrl('/instituicao/solicitacoes'), 2000);
+    } catch (e) { this.error.set(errorMessage(e)); }
+    finally { this.busy.set(false); }
   }
 
   starsStr(nota: number) {

@@ -3,6 +3,8 @@ import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
 import { AppStateService } from '../../../core/services/app-state.service';
 import { SubRequest } from '../../../core/models/app.models';
+import { FormsModule } from '@angular/forms';
+import { errorMessage } from '../../../core/services/api.service';
 
 const STATUS_MAP: Record<string, { label: string; cls: string }> = {
   aberta:     { label: 'Buscando professor',     cls: 'badge--aberta' },
@@ -16,9 +18,11 @@ const STATUS_MAP: Record<string, { label: string; cls: string }> = {
 @Component({
   selector: 'app-my-requests',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, FormsModule],
   template: `
 <div class="page-content page-enter">
+  @if (error()) { <p class="form-error" role="alert">{{error()}}</p> }
+  @if (message()) { <p role="status">{{message()}}</p> }
   <div class="page-top">
     <div>
       <h1 class="page-title">Minhas solicitações</h1>
@@ -80,11 +84,25 @@ const STATUS_MAP: Record<string, { label: string; cls: string }> = {
             @if (r.status === 'aberta') {
               <button class="btn btn--primary btn--sm" (click)="go('/instituicao/professores')">Buscar professor</button>
             }
-            @if (['aberta','aguardando'].includes(r.status)) {
-              <button class="btn btn--danger btn--sm" (click)="cancel(r.id)">Cancelar</button>
+            @if (['aberta','aguardando','confirmada'].includes(r.status)) {
+              <button class="btn btn--danger btn--sm" [disabled]="busy()" (click)="cancel(r.id)">Cancelar</button>
+            }
+            @if (r.status === 'confirmada') {
+              <button class="btn btn--success btn--sm" [disabled]="busy()" (click)="complete(r)">Concluir aula</button>
+            }
+            @if (r.status === 'concluida' && r.substitutionStatus === 'REALIZADA') {
+              @if (r.notaAvaliacao) { <span>Avaliação: {{r.notaAvaliacao}}/5</span> }
+              @else { <button class="btn btn--primary btn--sm" (click)="evaluationId.set(r.id)">Avaliar professor</button> }
             }
           </div>
         </div>
+        @if (evaluationId() === r.id) {
+          <div style="padding-top:16px;display:grid;gap:10px">
+            <label>Nota<select class="form-input" [(ngModel)]="nota"><option *ngFor="let n of [1,2,3,4,5]" [ngValue]="n">{{n}}</option></select></label>
+            <label>Comentário<textarea class="form-input" [(ngModel)]="comentario" rows="2"></textarea></label>
+            <button class="btn btn--primary" [disabled]="busy()" (click)="evaluate(r)">Enviar avaliação</button>
+          </div>
+        }
       </div>
     </div>
   }
@@ -128,6 +146,7 @@ const STATUS_MAP: Record<string, { label: string; cls: string }> = {
   `],
 })
 export class MyRequestsComponent {
+  error=signal(''); message=signal(''); busy=signal(false); evaluationId=signal(''); nota=5; comentario='';
   activeFilter = signal<string>('todas');
 
   filters = [
@@ -139,7 +158,7 @@ export class MyRequestsComponent {
     { label: 'Canceladas', value: 'cancelada' },
   ];
 
-  constructor(private router: Router, private appState: AppStateService) {}
+  constructor(private router: Router, private appState: AppStateService) { void appState.retry(); }
 
   get reqs() { return this.appState.requests; }
 
@@ -163,6 +182,17 @@ export class MyRequestsComponent {
   }
   label(s: string) { return STATUS_MAP[s]?.label || s; }
   cls(s: string) { return STATUS_MAP[s]?.cls || ''; }
-  cancel(id: string) { this.appState.cancelRequest(id); }
+  private async action(work: () => Promise<void>, message: string) {
+    if (this.busy()) return;
+    this.busy.set(true); this.error.set(''); this.message.set('');
+    try { await work(); this.message.set(message); }
+    catch (e) { this.error.set(errorMessage(e)); }
+    finally { this.busy.set(false); }
+  }
+  async cancel(id: string) { await this.action(() => this.appState.cancelRequest(id), 'Solicitação cancelada.'); }
+  async complete(request: SubRequest) { await this.action(() => this.appState.completeRequest(request), 'Aula concluída. Você já pode avaliar o professor.'); }
+  async evaluate(request: SubRequest) {
+    await this.action(async () => { await this.appState.evaluateRequest(request,this.nota,this.comentario); this.evaluationId.set(''); this.comentario=''; }, 'Avaliação registrada.');
+  }
   go(path: string) { this.router.navigateByUrl(path); }
 }

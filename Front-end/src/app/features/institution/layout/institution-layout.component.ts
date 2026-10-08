@@ -43,11 +43,12 @@ interface NavItem {
     </nav>
 
     <div class="sidebar__footer">
+      <button class="sidebar__logout" (click)="appState.retry()">↻ Atualizar dados</button>
       <div class="sidebar__user">
-        <div class="sidebar__avatar">M</div>
+        <div class="sidebar__avatar">{{appState.userName.charAt(0)}}</div>
         <div class="sidebar__user-info">
-          <p class="sidebar__user-name">Mariana Costa</p>
-          <p class="sidebar__user-role">Coordenadora Pedagógica</p>
+          <p class="sidebar__user-name">{{appState.userName}}</p>
+          <p class="sidebar__user-role">Instituição de ensino</p>
         </div>
       </div>
       <button class="sidebar__logout" (click)="logout()">
@@ -115,7 +116,7 @@ interface NavItem {
   `],
 })
 export class InstitutionLayoutComponent {
-  constructor(private router: Router, private appState: AppStateService) {}
+  constructor(private router: Router, public appState: AppStateService) {}
 
   navItems: NavItem[] = [
     { path: '/instituicao', label: 'Início', icon: '🏠' },
@@ -124,5 +125,5 @@ export class InstitutionLayoutComponent {
     { path: '/instituicao/professores', label: 'Buscar professores', icon: '🔍' },
   ];
 
-  logout() { this.router.navigateByUrl('/'); }
+  logout() { this.appState.logout(); this.router.navigateByUrl('/'); }
 }

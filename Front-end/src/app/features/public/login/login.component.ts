@@ -2,6 +2,7 @@ import { Component, signal } from '@angular/core';
 import { Router } from '@angular/router';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { AppStateService } from '../../../core/services/app-state.service';
+import { errorMessage } from '../../../core/services/api.service';
 
 type View = 'login' | 'register';
 
@@ -72,7 +73,6 @@ type View = 'login' | 'register';
           <div class="field">
             <div class="field__row">
               <label class="form-label" for="password">Senha</label>
-              <button type="button" class="forgot-link" (click)="go('/demo')">Esqueci minha senha</button>
             </div>
             <div class="input-wrap">
               <input id="password" [type]="showPassword() ? 'text' : 'password'" formControlName="password"
@@ -87,6 +87,9 @@ type View = 'login' | 'register';
                   <svg width="18" height="18" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3l14 14M10 4c5.5 0 9 6 9 6s-.9 1.65-2.42 3.13M6.62 6.6C4.48 7.98 3 10 3 10s3.5 6 9 6a9.2 9.2 0 0 0 3.38-.63"/></svg>
                 }
               </button>
+              @if (errorMessage()) {
+                <p class="form-error">{{errorMessage()}}</p>
+              }
             </div>
             @if (showError('password')) {
               <p class="form-error">{{ passwordError }}</p>
@@ -111,7 +114,7 @@ type View = 'login' | 'register';
         </form>
 
         <div class="demo-notice">
-          <strong>Protótipo:</strong> qualquer e-mail e senha entram na demonstração. Nenhum dado é salvo.
+          <strong>Acesso:</strong> use uma conta cadastrada para acessar os dados reais da plataforma.
         </div>
 
         <p class="login-switch">
@@ -127,29 +130,24 @@ type View = 'login' | 'register';
           Voltar ao login
         </button>
         <h1 class="login-title">Crie sua conta</h1>
-        <p class="login-sub">Como você vai usar o AulaSempre?</p>
+        <p class="login-sub">Preencha seus dados para criar uma conta real.</p>
 
-        <div class="profile-cards">
-          <button class="profile-card" (click)="register('professor')">
-            <div class="profile-card__icon">👩‍🏫</div>
-            <div>
-              <p class="profile-card__name">Sou professor</p>
-              <p class="profile-card__desc">Recebo convites, aceito ou recuso, e acompanho minhas substituições.</p>
-            </div>
-            <svg class="profile-card__arrow" width="18" height="18" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clip-rule="evenodd"/></svg>
-          </button>
-          <button class="profile-card" (click)="register('instituicao')">
-            <div class="profile-card__icon">🏫</div>
-            <div>
-              <p class="profile-card__name">Sou uma escola</p>
-              <p class="profile-card__desc">Publico solicitações, busco professores e gerencio as substituições.</p>
-            </div>
-            <svg class="profile-card__arrow" width="18" height="18" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clip-rule="evenodd"/></svg>
-          </button>
-        </div>
-
+        <form [formGroup]="registerForm" (ngSubmit)="handleRegister()" class="login-form">
+          <div class="field"><label class="form-label">Nome</label><input class="form-input" formControlName="name" placeholder="Seu nome ou nome da escola" /></div>
+          <div class="field"><label class="form-label">E-mail</label><input class="form-input" type="email" formControlName="email" placeholder="voce@exemplo.com" /></div>
+          <div class="field"><label class="form-label">Senha</label><input class="form-input" type="password" formControlName="password" placeholder="Mínimo de 6 caracteres" /></div>
+          <div class="field"><label class="form-label">Cidade</label><input class="form-input" formControlName="city" placeholder="São Paulo" /></div>
+          <div class="field"><label class="form-label">Estado</label><input class="form-input" formControlName="state" maxlength="2" placeholder="SP" /></div>
+          <div class="field"><label class="form-label">Telefone</label><input class="form-input" formControlName="phone" placeholder="(11) 99999-9999" /></div>
+          <div class="profile-cards">
+            <button type="button" class="profile-card" (click)="selectRegisterRole('PROFESSOR')">👩‍🏫 Sou professor</button>
+            <button type="button" class="profile-card" (click)="selectRegisterRole('ESCOLA')">🏫 Sou uma escola</button>
+          </div>
+          @if (registerError()) { <p class="form-error">{{registerError()}}</p> }
+          <button type="submit" class="btn btn--primary btn--block btn--lg" [disabled]="registerLoading()">{{registerLoading() ? 'Cadastrando…' : 'Criar conta'}}</button>
+        </form>
         <div class="demo-notice">
-          <strong>Protótipo:</strong> o cadastro entra direto na demonstração com dados fictícios.
+          Seu cadastro será salvo e você poderá completar seu perfil após entrar.
         </div>
       }
 
@@ -260,8 +258,12 @@ export class LoginComponent {
   showPassword = signal(false);
   loading = signal(false);
   submitted = signal(false);
+  errorMessage = signal('');
 
   loginForm: FormGroup;
+  registerForm: FormGroup;
+  registerLoading = signal(false);
+  registerError = signal('');
 
   constructor(
     private fb: FormBuilder,
@@ -272,6 +274,15 @@ export class LoginComponent {
       email: ['', [Validators.required, Validators.email]],
       password: ['', [Validators.required, Validators.minLength(6)]],
       remember: [false],
+    });
+    this.registerForm = this.fb.group({
+      name: ['', [Validators.required, Validators.minLength(2)]],
+      email: ['', [Validators.required, Validators.email]],
+      password: ['', [Validators.required, Validators.minLength(6)]],
+      role: ['PROFESSOR', Validators.required],
+      city: ['', Validators.required],
+      state: ['', [Validators.required, Validators.minLength(2), Validators.maxLength(2)]],
+      phone: [''],
     });
   }
 
@@ -300,13 +311,51 @@ export class LoginComponent {
     this.submitted.set(true);
     if (this.loginForm.invalid) return;
     this.loading.set(true);
-    await new Promise(r => setTimeout(r, 800));
-    this.loading.set(false);
-    this.router.navigateByUrl('/demo');
+    this.errorMessage.set('');
+    try {
+      const role = await this.appState.login(
+        this.loginForm.value.email,
+        this.loginForm.value.password,
+        this.loginForm.value.remember,
+      );
+      this.router.navigateByUrl(role === 'professor' ? '/professor' : '/instituicao');
+    } catch (error) {
+      console.error('Falha no login.', error);
+      this.errorMessage.set(errorMessage(error));
+    } finally {
+      this.loading.set(false);
+    }
   }
 
   register(role: 'professor' | 'instituicao') {
-    this.appState.setRole(role);
-    this.router.navigateByUrl(role === 'professor' ? '/professor' : '/instituicao');
+    this.selectRegisterRole(role === 'professor' ? 'PROFESSOR' : 'ESCOLA');
+  }
+
+  selectRegisterRole(role: 'PROFESSOR' | 'ESCOLA') {
+    this.registerForm.patchValue({ role });
+  }
+
+  async handleRegister() {
+    this.registerError.set('');
+    if (this.registerForm.invalid) {
+      this.registerForm.markAllAsTouched();
+      return;
+    }
+    this.registerLoading.set(true);
+    const value = this.registerForm.getRawValue();
+    try {
+      await this.appState.register({
+        nome: value.name, email: value.email, senha: value.password,
+        tipo_usuario: value.role, cidade: value.city,
+        estado: value.state.toUpperCase(), telefone: value.phone || undefined,
+      });
+      const role = await this.appState.login(value.email, value.password);
+      await this.router.navigateByUrl(role === 'professor' ? '/professor' : '/instituicao');
+    } catch (error) {
+      console.error('Falha no cadastro.', error);
+      this.registerError.set(errorMessage(error));
+    } finally {
+      this.registerLoading.set(false);
+    }
   }
 }
