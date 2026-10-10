@@ -67,51 +67,50 @@ interface NavItem {
   styles: [`
     .sidebar {
       width: 240px; min-height: 100vh; background: #fff;
-      border-right: 1px solid #E2E8F0;
+      border-right: 1px solid #DDD8CC;
       display: flex; flex-direction: column; flex-shrink: 0;
-      box-shadow: 1px 0 4px rgba(0,0,0,.04);
     }
     .sidebar__brand {
-      padding: 20px 16px; border-bottom: 1px solid #F1F5F9;
+      padding: 20px 16px; border-bottom: 1px solid #EDEAE1;
       display: flex; align-items: center; gap: 10px;
     }
     .sidebar__logo {
-      width: 32px; height: 32px; background: #2563EB; border-radius: 9px;
+      width: 32px; height: 32px; background: #1B2A4A; border-radius: 4px;
       display: flex; align-items: center; justify-content: center; flex-shrink: 0;
-      box-shadow: 0 2px 6px rgba(37,99,235,.3);
     }
-    .sidebar__brand-name { display: block; font-size: 14px; font-weight: 700; color: #0F172A; line-height: 1.2; }
-    .sidebar__brand-role { display: block; font-size: 11px; color: #94A3B8; }
+    .sidebar__brand-name { display: block; font-family: 'Source Serif 4', Georgia, serif; font-size: 15px; font-weight: 600; color: #1B2A4A; line-height: 1.2; }
+    .sidebar__brand-role { display: block; font-size: 11px; color: #8A93A8; }
     .sidebar__nav { flex: 1; padding: 12px 8px; display: flex; flex-direction: column; gap: 2px; }
     .sidebar__link {
       display: flex; align-items: center; gap: 10px;
-      padding: 9px 12px; border-radius: 9px;
-      font-size: 13px; font-weight: 500; color: #475569;
+      padding: 9px 12px; border-radius: 4px;
+      font-size: 13px; font-weight: 500; color: #4C5873;
       transition: all .15s; text-decoration: none;
-      &:hover { background: #F8FAFC; color: #0F172A; }
-      &--active { background: #EFF6FF !important; color: #2563EB !important; font-weight: 600; }
+      &:hover { background: #F7F5F0; color: #1B2A4A; }
+      &--active { background: #EEF1F6 !important; color: #1B2A4A !important; font-weight: 600; box-shadow: inset 2px 0 0 #1B2A4A; }
     }
     .sidebar__link-icon { font-size: 16px; line-height: 1; width: 18px; text-align: center; }
     .sidebar__link-label { flex: 1; }
     .sidebar__badge {
-      background: #2563EB; color: #fff; font-size: 10px; font-weight: 700;
+      background: #B97E24; color: #fff; font-size: 10px; font-weight: 700;
       border-radius: 9999px; width: 18px; height: 18px;
       display: flex; align-items: center; justify-content: center;
     }
-    .sidebar__footer { padding: 12px 8px; border-top: 1px solid #F1F5F9; }
+    .sidebar__footer { padding: 12px 8px; border-top: 1px solid #EDEAE1; }
     .sidebar__user { display: flex; align-items: center; gap: 10px; padding: 8px 12px; margin-bottom: 4px; }
     .sidebar__avatar {
-      width: 32px; height: 32px; border-radius: 50%; background: #DBEAFE;
-      color: #1D4ED8; font-size: 13px; font-weight: 700;
+      width: 32px; height: 32px; border-radius: 50%; background: #EEF1F6;
+      color: #1B2A4A; font-size: 13px; font-weight: 700;
       display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+      border: 1px solid #C7CEDC;
     }
-    .sidebar__user-name { font-size: 13px; font-weight: 600; color: #0F172A; }
-    .sidebar__user-role { font-size: 11px; color: #94A3B8; }
+    .sidebar__user-name { font-size: 13px; font-weight: 600; color: #1B2A4A; }
+    .sidebar__user-role { font-size: 11px; color: #8A93A8; }
     .sidebar__logout {
       display: flex; align-items: center; gap: 8px; width: 100%;
-      padding: 8px 12px; border-radius: 9px; font-size: 13px; color: #64748B;
+      padding: 8px 12px; border-radius: 4px; font-size: 13px; color: #6B7593;
       transition: all .15s;
-      &:hover { background: #FEF2F2; color: #DC2626; }
+      &:hover { background: #F7EBE9; color: #9B3B34; }
     }
   `],
 })
