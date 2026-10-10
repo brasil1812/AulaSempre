@@ -13,7 +13,7 @@ import { AppStateService } from '../../../core/services/app-state.service';
       <div class="logo-icon">
         <svg width="24" height="24" viewBox="0 0 18 18" fill="none">
           <path d="M9 1.5L15.5 5.25V12.75L9 16.5L2.5 12.75V5.25L9 1.5Z" fill="white"/>
-          <path d="M6 9L8.5 11.5L12.5 7" stroke="#2563EB" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+          <path d="M6 9L8.5 11.5L12.5 7" stroke="#1B2A4A" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
         </svg>
       </div>
       <span class="logo-text">Aula<span>Sempre</span></span>
@@ -58,49 +58,46 @@ import { AppStateService } from '../../../core/services/app-state.service';
   styles: [`
     .choice-page {
       min-height: 100vh; display: flex; align-items: center; justify-content: center;
-      background: linear-gradient(135deg, #EFF6FF 0%, #F8FAFC 60%, #F0FDF4 100%);
-      padding: 24px;
+      background: #F7F5F0;
+      padding: 24px; font-family: 'Public Sans', system-ui, sans-serif;
     }
     .choice-inner { width: 100%; max-width: 480px; text-align: center; }
     .choice-logo { display: flex; align-items: center; justify-content: center; gap: 10px; margin-bottom: 36px; }
     .logo-icon {
-      width: 48px; height: 48px; background: #2563EB; border-radius: 14px;
+      width: 46px; height: 46px; background: #1B2A4A; border-radius: 4px;
       display: flex; align-items: center; justify-content: center;
-      box-shadow: 0 4px 12px rgba(37,99,235,.3);
     }
-    .logo-text { font-size: 22px; font-weight: 800; color: #0F172A; span { color: #2563EB; } }
-    .choice-title { font-size: 28px; font-weight: 700; color: #0F172A; margin-bottom: 8px; }
-    .choice-desc { font-size: 15px; color: #64748B; margin-bottom: 32px; }
+    .logo-text { font-family: 'Source Serif 4', Georgia, serif; font-size: 22px; font-weight: 600; color: #1B2A4A; span { color: #B97E24; } }
+    .choice-title { font-family: 'Source Serif 4', Georgia, serif; font-size: 28px; font-weight: 600; color: #1B2A4A; margin-bottom: 8px; }
+    .choice-desc { font-size: 15px; color: #4C5873; margin-bottom: 32px; }
     .choice-cards { display: flex; flex-direction: column; gap: 14px; margin-bottom: 24px; }
     .choice-card {
       display: flex; align-items: center; gap: 16px; padding: 20px 22px;
-      border-radius: 18px; border: 2px solid transparent;
+      border-radius: 6px; border: 1.5px solid #DDD8CC;
       background: #fff; text-align: left; width: 100%;
-      box-shadow: 0 2px 8px rgba(0,0,0,.06);
-      transition: all .2s;
-      &:hover { transform: translateY(-2px); box-shadow: 0 8px 24px rgba(0,0,0,.1); }
-      &--inst:hover { border-color: #BFDBFE; }
-      &--prof:hover { border-color: #BBF7D0; }
+      transition: border-color .2s;
+      &--inst:hover { border-color: #1B2A4A; }
+      &--prof:hover { border-color: #2F5D50; }
     }
     .choice-card__icon {
-      font-size: 32px; width: 60px; height: 60px; flex-shrink: 0;
-      border-radius: 16px; display: flex; align-items: center; justify-content: center;
-      background: #EFF6FF;
+      font-size: 32px; width: 56px; height: 56px; flex-shrink: 0;
+      border-radius: 4px; display: flex; align-items: center; justify-content: center;
+      background: #EEF1F6;
     }
-    .choice-card--prof .choice-card__icon { background: #F0FDF4; }
+    .choice-card--prof .choice-card__icon { background: #EAF1EE; }
     .choice-card__body {
       flex: 1;
-      h2 { font-size: 15px; font-weight: 700; color: #0F172A; margin-bottom: 3px; }
-      p { font-size: 13px; color: #64748B; line-height: 1.4; }
+      h2 { font-size: 15px; font-weight: 700; color: #1B2A4A; margin-bottom: 3px; }
+      p { font-size: 13px; color: #4C5873; line-height: 1.4; }
     }
-    .choice-card__arrow { color: #CBD5E1; }
+    .choice-card__arrow { color: #C7CEDC; }
     .demo-badge {
       display: inline-flex; align-items: center; gap: 8px;
-      background: #F0FDF4; border: 1px solid #BBF7D0;
-      color: #166534; font-size: 13px; padding: 8px 16px;
-      border-radius: 9999px; margin-bottom: 20px;
+      background: #EAF1EE; border: 1px solid #A9C4BB;
+      color: #2F5D50; font-size: 13px; padding: 7px 16px;
+      border-radius: 4px; margin-bottom: 20px;
     }
-    .back-link { font-size: 13px; color: #94A3B8; &:hover { color: #475569; } }
+    .back-link { font-size: 13px; color: #8A93A8; &:hover { color: #4C5873; } }
   `],
 })
 export class ProfileChoiceComponent implements OnInit {
