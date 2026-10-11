@@ -79,23 +79,23 @@ const STATUS_MAP: Record<string, { label: string; cls: string }> = {
   `,
   styles: [`
     .dash-header { display: flex; align-items: flex-start; justify-content: space-between; margin-bottom: 28px; gap: 16px; flex-wrap: wrap; }
-    .dash-title { font-size: 22px; font-weight: 700; color: #0F172A; }
-    .dash-date { font-size: 13px; color: #94A3B8; margin-top: 2px; }
+    .dash-title { font-family: 'Source Serif 4', Georgia, serif; font-size: 23px; font-weight: 600; color: #1B2A4A; }
+    .dash-date { font-size: 13px; color: #8A93A8; margin-top: 2px; }
     .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px,1fr)); gap: 16px; margin-bottom: 24px; }
-    .card { background: #fff; border: 1px solid #E2E8F0; border-radius: 16px; overflow: hidden; }
-    .card-header { display: flex; align-items: center; justify-content: space-between; padding: 20px 24px; border-bottom: 1px solid #F1F5F9; }
-    .card-header__title { font-size: 15px; font-weight: 600; color: #0F172A; }
-    .link-btn { font-size: 13px; font-weight: 500; color: #2563EB; &:hover { text-decoration: underline; } }
+    .card { background: #fff; border: 1px solid #DDD8CC; border-radius: 6px; overflow: hidden; }
+    .card-header { display: flex; align-items: center; justify-content: space-between; padding: 20px 24px; border-bottom: 1px solid #EDEAE1; }
+    .card-header__title { font-size: 15px; font-weight: 600; color: #1B2A4A; }
+    .link-btn { font-size: 13px; font-weight: 500; color: #1B2A4A; &:hover { text-decoration: underline; } }
     .req-list { padding: 8px; }
     .req-item {
       display: flex; align-items: center; justify-content: space-between;
-      padding: 14px 16px; border-radius: 12px; cursor: pointer; gap: 12px;
+      padding: 14px 16px; border-radius: 4px; cursor: pointer; gap: 12px;
       transition: background .15s;
-      &:hover { background: #F8FAFC; }
+      &:hover { background: #F7F5F0; }
     }
     .req-item__info { flex: 1; min-width: 0; }
-    .req-item__title { font-size: 14px; font-weight: 600; color: #0F172A; }
-    .req-item__sub { font-size: 12px; color: #94A3B8; margin-top: 2px; }
+    .req-item__title { font-size: 14px; font-weight: 600; color: #1B2A4A; }
+    .req-item__sub { font-size: 12px; color: #8A93A8; margin-top: 2px; }
     .req-item__actions { display: flex; align-items: center; gap: 10px; flex-shrink: 0; }
   `],
 })

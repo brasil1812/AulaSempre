@@ -175,8 +175,8 @@ const EXPERIENCIAS = ['Qualquer experiência','Pelo menos 1 ano','Pelo menos 2 a
           <div class="review__ok">
             <span>✅</span>
             <div>
-              <p style="font-size:14px;font-weight:600;color:#065F46">Tudo certo!</p>
-              <p style="font-size:12px;color:#16A34A;margin-top:2px">Ao publicar, você poderá buscar professores e enviar convites.</p>
+              <p style="font-size:14px;font-weight:600;color:#2F5D50">Tudo certo!</p>
+              <p style="font-size:12px;color:#2F5D50;margin-top:2px">Ao publicar, você poderá buscar professores e enviar convites.</p>
             </div>
           </div>
         </div>
@@ -200,49 +200,49 @@ const EXPERIENCIAS = ['Qualquer experiência','Pelo menos 1 ano','Pelo menos 2 a
   `,
   styles: [`
     .success-wrap { display: flex; justify-content: center; padding: 40px 0; }
-    .success-card { background:#fff; border:1px solid #E2E8F0; border-radius:20px; padding:48px 40px; text-align:center; max-width:440px; width:100%; box-shadow:0 4px 16px rgba(0,0,0,.07); }
+    .success-card { background:#fff; border:1px solid #DDD8CC; border-radius:6px; padding:48px 40px; text-align:center; max-width:440px; width:100%; }
     .success-icon { font-size:52px; margin-bottom:16px; }
-    .success-title { font-size:22px; font-weight:700; color:#0F172A; margin-bottom:8px; }
-    .success-desc { font-size:14px; color:#64748B; margin-bottom:28px; line-height:1.6; }
+    .success-title { font-family:'Source Serif 4', Georgia, serif; font-size:22px; font-weight:600; color:#1B2A4A; margin-bottom:8px; }
+    .success-desc { font-size:14px; color:#4C5873; margin-bottom:28px; line-height:1.6; }
     .success-actions { display:flex; flex-direction:column; gap:10px; }
     .wizard-header { margin-bottom:20px; }
-    .back-btn { display:flex; align-items:center; gap:6px; font-size:13px; color:#64748B; margin-bottom:10px; &:hover{color:#334155;} }
-    .wizard-title { font-size:22px; font-weight:700; color:#0F172A; }
-    .wizard-sub { font-size:13px; color:#94A3B8; margin-top:2px; }
+    .back-btn { display:flex; align-items:center; gap:6px; font-size:13px; color:#4C5873; margin-bottom:10px; &:hover{color:#1B2A4A;} }
+    .wizard-title { font-family:'Source Serif 4', Georgia, serif; font-size:23px; font-weight:600; color:#1B2A4A; }
+    .wizard-sub { font-size:13px; color:#8A93A8; margin-top:2px; }
     .progress-wrap { margin-bottom:24px; }
-    .progress-bar { height:6px; background:#E2E8F0; border-radius:9999px; overflow:hidden; margin-bottom:8px; }
-    .progress-bar__fill { height:100%; background:#2563EB; border-radius:9999px; transition:width .4s ease; }
+    .progress-bar { height:4px; background:#DDD8CC; border-radius:9999px; overflow:hidden; margin-bottom:8px; }
+    .progress-bar__fill { height:100%; background:#1B2A4A; border-radius:9999px; transition:width .4s ease; }
     .progress-labels { display:flex; justify-content:space-between;
-      span { font-size:11px; font-weight:500; color:#CBD5E1;
-        &.active { color:#2563EB; }
-        &.done { color:#22C55E; }
+      span { font-size:11px; font-weight:500; color:#C7CEDC;
+        &.active { color:#1B2A4A; }
+        &.done { color:#2F5D50; }
       }
     }
     .form-card { padding:32px; }
     .form-fields { display:flex; flex-direction:column; gap:20px; }
     .field { display:flex; flex-direction:column; }
     .field-row { display:grid; grid-template-columns:1fr 1fr; gap:14px; }
-    .opt { color:#94A3B8; font-size:12px; font-weight:400; }
+    .opt { color:#8A93A8; font-size:12px; font-weight:400; }
     .toggle-group { display:grid; grid-template-columns:1fr 1fr; gap:10px; }
     .toggle-btn {
-      padding:11px; border-radius:12px; border:2px solid #E2E8F0;
-      font-size:14px; font-weight:600; color:#64748B; transition:all .15s;
-      &:hover { border-color:#93C5FD; }
-      &.active { border-color:#2563EB; background:#EFF6FF; color:#1D4ED8; }
+      padding:11px; border-radius:4px; border:1.5px solid #DDD8CC;
+      font-size:14px; font-weight:600; color:#4C5873; transition:all .15s;
+      &:hover { border-color:#C3BCAB; }
+      &.active { border-color:#1B2A4A; background:#EEF1F6; color:#1B2A4A; }
     }
     .input-prefix { position:relative;
-      span { position:absolute; left:14px; top:50%; transform:translateY(-50%); font-size:14px; color:#64748B; font-weight:500; }
+      span { position:absolute; left:14px; top:50%; transform:translateY(-50%); font-size:14px; color:#4C5873; font-weight:500; }
       input { padding-left:36px; }
     }
     .wizard-btns { display:flex; gap:12px; margin-top:28px; }
     .review { }
-    .review__header { font-size:15px; font-weight:700; color:#0F172A; margin-bottom:16px; }
+    .review__header { font-size:15px; font-weight:700; color:#1B2A4A; margin-bottom:16px; }
     .review__grid { display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-bottom:12px; }
-    .review__item, .review__obs { background:#F8FAFC; border-radius:10px; padding:12px; }
+    .review__item, .review__obs { background:#F7F5F0; border-radius:4px; padding:12px; }
     .review__obs { margin-bottom:12px; }
-    .review__key { font-size:11px; color:#94A3B8; margin-bottom:2px; }
-    .review__val { font-size:13px; font-weight:600; color:#0F172A; text-transform:capitalize; }
-    .review__ok { background:#F0FDF4; border:1px solid #BBF7D0; border-radius:12px; padding:14px 16px; display:flex; gap:12px; align-items:flex-start; }
+    .review__key { font-size:11px; color:#8A93A8; margin-bottom:2px; }
+    .review__val { font-size:13px; font-weight:600; color:#1B2A4A; text-transform:capitalize; }
+    .review__ok { background:#EAF1EE; border:1px solid #A9C4BB; border-radius:4px; padding:14px 16px; display:flex; gap:12px; align-items:flex-start; }
   `],
 })
 export class CreateRequestComponent {
