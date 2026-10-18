@@ -1,7 +1,8 @@
 import 'dotenv/config';
 import mysql from 'mysql2/promise';
+import { sslOptions } from './ssl.js';
 const name=process.env.DB_NAME||'aulasempre';
-const admin=await mysql.createConnection({host:process.env.DB_HOST||'127.0.0.1',port:Number(process.env.DB_PORT||3306),user:process.env.DB_USER,password:process.env.DB_PASSWORD});
+const admin=await mysql.createConnection({host:process.env.DB_HOST||'127.0.0.1',port:Number(process.env.DB_PORT||3306),user:process.env.DB_USER,password:process.env.DB_PASSWORD,...sslOptions()});
 let empty;
 try { const [rows]=await admin.query('SELECT COUNT(*) AS n FROM information_schema.tables WHERE table_schema=?',[name]); empty=rows[0].n===0; }
 finally { await admin.end(); }
