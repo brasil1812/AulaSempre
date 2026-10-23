@@ -58,7 +58,7 @@ interface Formation { curso: string; instituicao: string; tipo_formacao: string;
     </form>
     }
   </div>`,
-  styles: [`.profile-form {padding:24px;display:grid;gap:20px;margin-top:20px}label {display:grid;gap:6px;font-size:14px}.field-row {display:flex;gap:12px;flex-wrap:wrap;margin-bottom:12px}.field-row label {flex:1;min-width:130px}fieldset {border:1px solid #E2E8F0;border-radius:12px;padding:16px}legend {font-weight:600}.check {display:inline-flex;align-items:center;margin:8px 16px 8px 0}.formation {padding:12px 0;border-bottom:1px solid #E2E8F0;margin-bottom:12px}.notice {padding:12px;background:#EFF6FF;color:#1E40AF;border-radius:8px;margin-top:16px}`],
+  styles: [`.page-title{font-family:'Source Serif 4', Georgia, serif;font-size:23px;font-weight:600;color:var(--color-primary)}.page-sub{font-size:13px;color:var(--color-text-muted);margin-top:2px}.profile-form {padding:24px;display:grid;gap:20px;margin-top:20px}label {display:grid;gap:6px;font-size:14px}.field-row {display:flex;gap:12px;flex-wrap:wrap;margin-bottom:12px}.field-row label {flex:1;min-width:130px}fieldset {border:1px solid var(--color-border);border-radius:4px;padding:16px}legend {font-weight:600;color:var(--color-primary)}.check {display:inline-flex;align-items:center;margin:8px 16px 8px 0}.formation {padding:12px 0;border-bottom:1px solid var(--color-border);margin-bottom:12px}.notice {padding:12px;background:var(--color-primary-light);color:var(--color-primary);border-radius:4px;margin-top:16px}`],
 })
 export class TeacherProfileComponent implements OnInit {
   ready=signal(false); saving=signal(false); message=signal(''); error=signal('');

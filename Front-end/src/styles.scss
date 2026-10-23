@@ -23,6 +23,16 @@
   --color-text-secondary:#4C5873;
   --color-text-muted:    #8A93A8;
   --color-text-disabled: #C7CEDC;
+  --color-text-body:     #33405E; // texto corrido em fundos claros
+  --color-text-soft:     #6B7593;
+
+  // Variações usadas em contornos e textos de apoio
+  --color-success-border:#A9C4BB;
+  --color-warning-border:#E4C691;
+  --color-warning-dark:  #8A5A17;
+  --color-danger-border: #DBB4AF;
+  --color-border-soft:   #EDEAE1;
+  --color-neutral-light: #F1EFE8;
 
   // ── Fontes ───────────────────────────────────────────────
   --font-display: 'Source Serif 4', Georgia, 'Times New Roman', serif;
@@ -217,15 +227,57 @@ img { max-width: 100%; display: block; }
   @extend .card;
   padding: 20px;
 
-  &__icon { font-size: 24px; margin-bottom: 10px; }
-  &__value { font-family: var(--font-display); font-size: 28px; font-weight: 600; color: var(--color-text-primary); margin-bottom: 2px; }
+  border-left: 3px solid var(--color-primary-muted);
+  &__value { font-family: var(--font-display); font-size: 34px; line-height: 1.15; font-variant-numeric: tabular-nums; font-weight: 600; color: var(--color-text-primary); margin-bottom: 2px; }
   &__label { font-size: 13px; color: var(--color-text-secondary); }
 }
 
 // ── Empty state ──────────────────────────────────────────────
 .empty-state {
   text-align: center; padding: 60px 24px;
-  &__icon { font-size: 48px; margin-bottom: 12px; }
+  // Folha de caderno pautada, com a margem dourada: ilustração própria, sem emoji
+  &__icon {
+    width: 54px; height: 66px; margin: 0 auto 20px;
+    background:
+      linear-gradient(90deg, transparent 13px, #E4C691 13px, #E4C691 14.5px, transparent 14.5px),
+      repeating-linear-gradient(180deg, transparent 0 13px, #DCE3EE 13px 14px),
+      #fff;
+    border: 1px solid var(--color-border-hover);
+    border-radius: 2px;
+    transform: rotate(-3deg);
+    box-shadow: 4px 4px 0 var(--color-primary-light);
+  }
   &__title { font-size: 16px; font-weight: 600; color: var(--color-text-secondary); margin-bottom: 4px; }
   &__desc  { font-size: 13px; color: var(--color-text-muted); }
+}
+
+// ── Marca de "certo" desenhada em CSS (substitui ✓ e ✅) ───────
+.tick {
+  display: inline-block; width: 11px; height: 6px;
+  border-left: 2px solid currentColor; border-bottom: 2px solid currentColor;
+  transform: rotate(-45deg);
+}
+
+// ── Movimento ────────────────────────────────────────────────
+// Entrada escalonada: usada uma vez por tela (nos números do painel)
+@keyframes riseIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to   { opacity: 1; transform: none; }
+}
+.stagger > * { animation: riseIn .45s cubic-bezier(.2,.7,.2,1) both; }
+.stagger > *:nth-child(2) { animation-delay: .07s; }
+.stagger > *:nth-child(3) { animation-delay: .14s; }
+.stagger > *:nth-child(4) { animation-delay: .21s; }
+
+// Respostas às ações da pessoa
+.btn:active:not(:disabled) { transform: translateY(1px); }
+.card, .stat-card { transition: border-color var(--transition), box-shadow var(--transition); }
+.stat-card:hover { border-left-color: var(--color-warning); }
+
+// Foco visível para quem usa teclado
+:focus-visible { outline: 2px solid var(--color-warning); outline-offset: 2px; }
+.form-input:focus-visible { outline: none; }
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation-duration: .01ms !important; animation-delay: 0s !important; transition-duration: .01ms !important; }
 }

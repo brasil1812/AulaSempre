@@ -20,7 +20,7 @@ import { errorMessage } from '../../../core/services/api.service';
   @if (pending.length === 0 && others.length === 0) {
     <div class="card empty-card">
       <div class="empty-state">
-        <div class="empty-state__icon">✉️</div>
+        <div class="empty-state__icon"></div>
         <h3 class="empty-state__title">Nenhum convite recebido</h3>
         <p class="empty-state__desc">Quando uma escola te convidar, o convite aparecerá aqui.</p>
       </div>
@@ -43,30 +43,30 @@ import { errorMessage } from '../../../core/services/api.service';
 
               <div class="details-grid">
                 <div class="detail-box">
-                  <p class="detail-box__key">🏢 Instituição</p>
+                  <p class="detail-box__key">Instituição</p>
                   <p class="detail-box__val">{{r.instituicaoNome}}</p>
                 </div>
                 <div class="detail-box">
-                  <p class="detail-box__key">📅 Data</p>
+                  <p class="detail-box__key">Data</p>
                   <p class="detail-box__val">{{fmt(r.data)}}</p>
                 </div>
                 <div class="detail-box">
-                  <p class="detail-box__key">🕐 Horário</p>
+                  <p class="detail-box__key">Horário</p>
                   <p class="detail-box__val">{{r.horarioInicio}} – {{r.horarioFim}}</p>
                 </div>
                 <div class="detail-box">
-                  <p class="detail-box__key">📍 Modalidade</p>
+                  <p class="detail-box__key">Modalidade</p>
                   <p class="detail-box__val">
                     {{r.modalidade === 'presencial' ? 'Presencial – ' + r.cidade : 'Online'}}
                   </p>
                 </div>
                 <div class="detail-box">
-                  <p class="detail-box__key">💰 Valor</p>
+                  <p class="detail-box__key">Valor</p>
                   <p class="detail-box__val">R$ {{r.valor}}</p>
                 </div>
                 @if (r.turma) {
                   <div class="detail-box">
-                    <p class="detail-box__key">👥 Turma</p>
+                    <p class="detail-box__key">Turma</p>
                     <p class="detail-box__val">{{r.turma}}</p>
                   </div>
                 }
@@ -74,7 +74,7 @@ import { errorMessage } from '../../../core/services/api.service';
 
               @if (r.observacoes) {
                 <div class="notes-box">
-                  <p class="notes-box__title">📝 Observações da instituição</p>
+                  <p class="notes-box__title">Observações da instituição</p>
                   <p class="notes-box__content">{{r.observacoes}}</p>
                 </div>
               }
@@ -117,41 +117,41 @@ import { errorMessage } from '../../../core/services/api.service';
   `,
   styles: [`
     .page-header { margin-bottom: 24px; }
-    .page-title { font-size: 22px; font-weight: 700; color: #0F172A; }
-    .page-sub { font-size: 13px; color: #94A3B8; margin-top: 2px; }
+    .page-title { font-family: 'Source Serif 4', Georgia, serif; font-size: 23px; font-weight: 600; color: var(--color-primary); }
+    .page-sub { font-size: 13px; color: var(--color-text-muted); margin-top: 2px; }
 
     .invites-container { display: flex; flex-direction: column; gap: 24px; }
     .section-title {
-      font-size: 12px; font-weight: 700; color: #64748B;
+      font-size: 12px; font-weight: 700; color: var(--color-text-secondary);
       text-transform: uppercase; letter-spacing: .05em; margin-bottom: 14px;
     }
     .cards-list { display: flex; flex-direction: column; gap: 16px; }
 
     .invite-card {
-      padding: 24px; border: 2px solid #BFDBFE;
+      padding: 24px; border: 1.5px solid var(--color-success-border);
     }
     .invite-card__header {
       display: flex; align-items: flex-start; justify-content: space-between; margin-bottom: 16px;
     }
-    .invite-card__title { font-size: 18px; font-weight: 700; color: #0F172A; }
-    .invite-card__sub { font-size: 14px; color: #64748B; margin-top: 2px; }
+    .invite-card__title { font-size: 18px; font-weight: 700; color: var(--color-primary); }
+    .invite-card__sub { font-size: 14px; color: var(--color-text-secondary); margin-top: 2px; }
 
     .details-grid {
       display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
       gap: 10px; margin-bottom: 16px;
     }
     .detail-box {
-      background: #F8FAFC; border-radius: 12px; padding: 12px 14px;
+      background: var(--color-bg); border-radius: 4px; padding: 12px 14px;
     }
-    .detail-box__key { font-size: 11px; color: #94A3B8; margin-bottom: 3px; font-weight: 500; }
-    .detail-box__val { font-size: 13px; font-weight: 600; color: #0F172A; }
+    .detail-box__key { font-size: 11px; color: var(--color-text-muted); margin-bottom: 3px; font-weight: 500; }
+    .detail-box__val { font-size: 13px; font-weight: 600; color: var(--color-primary); }
 
     .notes-box {
-      background: #FFFBEB; border: 1px solid #FEF3C7; border-radius: 12px;
+      background: var(--color-warning-light); border: 1px solid var(--color-warning-border); border-radius: 4px;
       padding: 14px 16px; margin-bottom: 18px;
     }
-    .notes-box__title { font-size: 11px; font-weight: 600; color: #B45309; margin-bottom: 4px; }
-    .notes-box__content { font-size: 13px; color: #92400E; line-height: 1.5; }
+    .notes-box__title { font-size: 11px; font-weight: 600; color: var(--color-warning-dark); margin-bottom: 4px; }
+    .notes-box__content { font-size: 13px; color: var(--color-warning-dark); line-height: 1.5; }
 
     .actions-row { display: flex; gap: 12px; }
 
@@ -159,8 +159,8 @@ import { errorMessage } from '../../../core/services/api.service';
     .history-card__inner {
       display: flex; align-items: center; justify-content: space-between;
     }
-    .history-card__title { font-size: 14px; font-weight: 600; color: #0F172A; }
-    .history-card__sub { font-size: 12px; color: #64748B; margin-top: 2px; }
+    .history-card__title { font-size: 14px; font-weight: 600; color: var(--color-primary); }
+    .history-card__sub { font-size: 12px; color: var(--color-text-secondary); margin-top: 2px; }
   `],
 })
 export class TeacherInvitesComponent {

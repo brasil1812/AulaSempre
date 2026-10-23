@@ -1,13 +1,14 @@
 import { Component } from '@angular/core';
 import { Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
+import { CountUpDirective } from '../../../core/count-up.directive';
 import { AppStateService } from '../../../core/services/app-state.service';
 import { SubRequest } from '../../../core/models/app.models';
 
 @Component({
   selector: 'app-teacher-dashboard',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, CountUpDirective],
   template: `
 <div class="page-content page-enter">
   <!-- Header -->
@@ -19,19 +20,16 @@ import { SubRequest } from '../../../core/models/app.models';
   </div>
 
   <!-- Stats Grid -->
-  <div class="stats-grid">
+  <div class="stats-grid stagger">
     <div class="stat-card">
-      <div class="stat-card__icon">✉️</div>
-      <div class="stat-card__value">{{myInvites.length}}</div>
+      <div class="stat-card__value" [countUp]="myInvites.length"></div>
       <div class="stat-card__label">Convites recebidos</div>
     </div>
     <div class="stat-card">
-      <div class="stat-card__icon">✅</div>
-      <div class="stat-card__value">{{myConfirmed.length}}</div>
+      <div class="stat-card__value" [countUp]="myConfirmed.length"></div>
       <div class="stat-card__label">Substituições confirmadas</div>
     </div>
     <div class="stat-card">
-      <div class="stat-card__icon">⭐</div>
       <div class="stat-card__value">{{teacher.nota}}</div>
       <div class="stat-card__label">Avaliação média</div>
     </div>
@@ -75,7 +73,7 @@ import { SubRequest } from '../../../core/models/app.models';
 
     @if (myConfirmed.length === 0) {
       <div class="empty-state">
-        <div class="empty-state__icon">📅</div>
+        <div class="empty-state__icon"></div>
         <p class="empty-state__title">Nenhuma substituição confirmada ainda</p>
         <p class="empty-state__desc">
           {{myInvites.length === 0 ? 'Aguarde novos convites de instituições.' : 'Você possui convites pendentes de resposta acima.'}}
@@ -91,7 +89,7 @@ import { SubRequest } from '../../../core/models/app.models';
               @if (r.modalidade === 'presencial') { · {{r.cidade}} }
             </p>
           </div>
-          <span class="badge badge--confirmada">✓ Confirmada</span>
+          <span class="badge badge--confirmada">Confirmada</span>
         </div>
       </div>
     }
@@ -100,45 +98,45 @@ import { SubRequest } from '../../../core/models/app.models';
   `,
   styles: [`
     .dash-header { margin-bottom: 28px; }
-    .dash-title { font-size: 22px; font-weight: 700; color: #0F172A; }
-    .dash-date { font-size: 13px; color: #94A3B8; margin-top: 2px; }
+    .dash-title { font-family: 'Source Serif 4', Georgia, serif; font-size: 23px; font-weight: 600; color: var(--color-primary); }
+    .dash-date { font-size: 13px; color: var(--color-text-muted); margin-top: 2px; }
     .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 16px; margin-bottom: 24px; }
-    
+
     .card--invite-highlight {
-      border: 1.5px solid #BFDBFE;
+      border: 1.5px solid var(--color-success-border);
       background: #FFFFFF;
     }
     .card-header {
       display: flex; align-items: center; justify-content: space-between;
-      padding: 18px 24px; border-bottom: 1px solid #F1F5F9;
+      padding: 18px 24px; border-bottom: 1px solid var(--color-border-soft);
     }
-    .card-header__title { font-size: 15px; font-weight: 600; color: #0F172A; }
-    .link-btn { font-size: 13px; font-weight: 500; color: #2563EB; &:hover { text-decoration: underline; } }
+    .card-header__title { font-size: 15px; font-weight: 600; color: var(--color-primary); }
+    .link-btn { font-size: 13px; font-weight: 500; color: var(--color-success); &:hover { text-decoration: underline; } }
 
     .invite-header-badge { display: flex; align-items: center; gap: 10px; }
     .invite-count {
       width: 26px; height: 26px; border-radius: 50%;
-      background: #2563EB; color: #fff; font-size: 12px; font-weight: 700;
+      background: var(--color-success); color: #fff; font-size: 12px; font-weight: 700;
       display: flex; align-items: center; justify-content: center;
     }
 
     .invite-list, .confirmed-list { padding: 8px; }
     .invite-item {
       display: flex; align-items: center; justify-content: space-between;
-      padding: 14px 16px; border-radius: 12px; background: #EFF6FF; margin: 4px 0; gap: 12px;
+      padding: 14px 16px; border-radius: 4px; background: var(--color-success-light); margin: 4px 0; gap: 12px;
     }
     .invite-item__info { flex: 1; min-width: 0; }
-    .invite-item__title { font-size: 14px; font-weight: 600; color: #1E3A8A; }
-    .invite-item__sub { font-size: 12px; color: #3B82F6; margin-top: 2px; }
+    .invite-item__title { font-size: 14px; font-weight: 600; color: var(--color-primary); }
+    .invite-item__sub { font-size: 12px; color: var(--color-success); margin-top: 2px; }
 
     .confirmed-item {
       display: flex; align-items: center; justify-content: space-between;
-      padding: 14px 16px; border-radius: 12px; transition: background .15s;
-      &:hover { background: #F8FAFC; }
+      padding: 14px 16px; border-radius: 4px; transition: background .15s;
+      &:hover { background: var(--color-bg); }
     }
     .confirmed-item__info { flex: 1; min-width: 0; }
-    .confirmed-item__title { font-size: 14px; font-weight: 600; color: #0F172A; }
-    .confirmed-item__sub { font-size: 12px; color: #64748B; margin-top: 2px; }
+    .confirmed-item__title { font-size: 14px; font-weight: 600; color: var(--color-primary); }
+    .confirmed-item__sub { font-size: 12px; color: var(--color-text-secondary); margin-top: 2px; }
   `],
 })
 export class TeacherDashboardComponent {
