@@ -20,7 +20,7 @@ const EXPERIENCIAS = ['Qualquer experiência','Pelo menos 1 ano','Pelo menos 2 a
     <!-- Success state -->
     <div class="success-wrap">
       <div class="success-card">
-        <div class="success-icon">✅</div>
+        <div class="success-icon tick"></div>
         <h2 class="success-title">Solicitação criada!</h2>
         <p class="success-desc">Sua solicitação foi publicada. Agora você pode buscar professores compatíveis e enviar convites.</p>
         <div class="success-actions">
@@ -34,7 +34,6 @@ const EXPERIENCIAS = ['Qualquer experiência','Pelo menos 1 ano','Pelo menos 2 a
     <!-- Header -->
     <div class="wizard-header">
       <button class="back-btn" (click)="stepBack()">
-        <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor"><path fill-rule="evenodd" d="M9.707 4.293a1 1 0 010 1.414L7.414 8l2.293 2.293a1 1 0 01-1.414 1.414l-3-3a1 1 0 010-1.414l3-3a1 1 0 011.414 0z" clip-rule="evenodd"/></svg>
         {{step() > 0 ? 'Etapa anterior' : 'Voltar'}}
       </button>
       <h1 class="wizard-title">Solicitar substituição</h1>
@@ -107,8 +106,8 @@ const EXPERIENCIAS = ['Qualquer experiência','Pelo menos 1 ano','Pelo menos 2 a
           <div class="field">
             <label class="form-label">Modalidade *</label>
             <div class="toggle-group">
-              <button type="button" class="toggle-btn" [class.active]="step1Form.get('modalidade')?.value==='presencial'" (click)="step1Form.get('modalidade')?.setValue('presencial')">🏫 Presencial</button>
-              <button type="button" class="toggle-btn" [class.active]="step1Form.get('modalidade')?.value==='online'" (click)="step1Form.get('modalidade')?.setValue('online')">💻 Online</button>
+              <button type="button" class="toggle-btn" [class.active]="step1Form.get('modalidade')?.value==='presencial'" (click)="step1Form.get('modalidade')?.setValue('presencial')">Presencial</button>
+              <button type="button" class="toggle-btn" [class.active]="step1Form.get('modalidade')?.value==='online'" (click)="step1Form.get('modalidade')?.setValue('online')">Online</button>
             </div>
           </div>
           @if (step1Form.get('modalidade')?.value === 'presencial') {
@@ -159,7 +158,7 @@ const EXPERIENCIAS = ['Qualquer experiência','Pelo menos 1 ano','Pelo menos 2 a
       <!-- Step 3: Revisão -->
       @if (step() === 3) {
         <div class="review">
-          <div class="review__header">📋 Revisão da solicitação</div>
+          <div class="review__header">Revisão da solicitação</div>
           <div class="review__grid">
             <div class="review__item" *ngFor="let item of reviewItems">
               <p class="review__key">{{item[0]}}</p>
@@ -173,10 +172,9 @@ const EXPERIENCIAS = ['Qualquer experiência','Pelo menos 1 ano','Pelo menos 2 a
             </div>
           }
           <div class="review__ok">
-            <span>✅</span>
             <div>
-              <p style="font-size:14px;font-weight:600;color:#2F5D50">Tudo certo!</p>
-              <p style="font-size:12px;color:#2F5D50;margin-top:2px">Ao publicar, você poderá buscar professores e enviar convites.</p>
+              <p style="font-size:14px;font-weight:600;color:var(--color-success)">Tudo certo!</p>
+              <p style="font-size:12px;color:var(--color-success);margin-top:2px">Ao publicar, você poderá buscar professores e enviar convites.</p>
             </div>
           </div>
         </div>
@@ -200,49 +198,49 @@ const EXPERIENCIAS = ['Qualquer experiência','Pelo menos 1 ano','Pelo menos 2 a
   `,
   styles: [`
     .success-wrap { display: flex; justify-content: center; padding: 40px 0; }
-    .success-card { background:#fff; border:1px solid #DDD8CC; border-radius:6px; padding:48px 40px; text-align:center; max-width:440px; width:100%; }
-    .success-icon { font-size:52px; margin-bottom:16px; }
-    .success-title { font-family:'Source Serif 4', Georgia, serif; font-size:22px; font-weight:600; color:#1B2A4A; margin-bottom:8px; }
-    .success-desc { font-size:14px; color:#4C5873; margin-bottom:28px; line-height:1.6; }
+    .success-card { background:#fff; border:1px solid var(--color-border); border-radius:6px; padding:48px 40px; text-align:center; max-width:440px; width:100%; }
+    .success-icon { width:30px; height:15px; border-width:4px; color:var(--color-success); margin:8px auto 28px; }
+    .success-title { font-family:'Source Serif 4', Georgia, serif; font-size:22px; font-weight:600; color:var(--color-primary); margin-bottom:8px; }
+    .success-desc { font-size:14px; color:var(--color-text-secondary); margin-bottom:28px; line-height:1.6; }
     .success-actions { display:flex; flex-direction:column; gap:10px; }
     .wizard-header { margin-bottom:20px; }
-    .back-btn { display:flex; align-items:center; gap:6px; font-size:13px; color:#4C5873; margin-bottom:10px; &:hover{color:#1B2A4A;} }
-    .wizard-title { font-family:'Source Serif 4', Georgia, serif; font-size:23px; font-weight:600; color:#1B2A4A; }
-    .wizard-sub { font-size:13px; color:#8A93A8; margin-top:2px; }
+    .back-btn { display:flex; align-items:center; gap:6px; font-size:13px; color:var(--color-text-secondary); margin-bottom:10px; &:hover{color:var(--color-primary);} }
+    .wizard-title { font-family:'Source Serif 4', Georgia, serif; font-size:23px; font-weight:600; color:var(--color-primary); }
+    .wizard-sub { font-size:13px; color:var(--color-text-muted); margin-top:2px; }
     .progress-wrap { margin-bottom:24px; }
-    .progress-bar { height:4px; background:#DDD8CC; border-radius:9999px; overflow:hidden; margin-bottom:8px; }
-    .progress-bar__fill { height:100%; background:#1B2A4A; border-radius:9999px; transition:width .4s ease; }
+    .progress-bar { height:4px; background:var(--color-border); border-radius:9999px; overflow:hidden; margin-bottom:8px; }
+    .progress-bar__fill { height:100%; background:var(--color-primary); border-radius:9999px; transition:width .4s ease; }
     .progress-labels { display:flex; justify-content:space-between;
-      span { font-size:11px; font-weight:500; color:#C7CEDC;
-        &.active { color:#1B2A4A; }
-        &.done { color:#2F5D50; }
+      span { font-size:11px; font-weight:500; color:var(--color-primary-muted);
+        &.active { color:var(--color-primary); }
+        &.done { color:var(--color-success); }
       }
     }
     .form-card { padding:32px; }
     .form-fields { display:flex; flex-direction:column; gap:20px; }
     .field { display:flex; flex-direction:column; }
     .field-row { display:grid; grid-template-columns:1fr 1fr; gap:14px; }
-    .opt { color:#8A93A8; font-size:12px; font-weight:400; }
+    .opt { color:var(--color-text-muted); font-size:12px; font-weight:400; }
     .toggle-group { display:grid; grid-template-columns:1fr 1fr; gap:10px; }
     .toggle-btn {
-      padding:11px; border-radius:4px; border:1.5px solid #DDD8CC;
-      font-size:14px; font-weight:600; color:#4C5873; transition:all .15s;
-      &:hover { border-color:#C3BCAB; }
-      &.active { border-color:#1B2A4A; background:#EEF1F6; color:#1B2A4A; }
+      padding:11px; border-radius:4px; border:1.5px solid var(--color-border);
+      font-size:14px; font-weight:600; color:var(--color-text-secondary); transition:all .15s;
+      &:hover { border-color:var(--color-border-hover); }
+      &.active { border-color:var(--color-primary); background:var(--color-primary-light); color:var(--color-primary); }
     }
     .input-prefix { position:relative;
-      span { position:absolute; left:14px; top:50%; transform:translateY(-50%); font-size:14px; color:#4C5873; font-weight:500; }
+      span { position:absolute; left:14px; top:50%; transform:translateY(-50%); font-size:14px; color:var(--color-text-secondary); font-weight:500; }
       input { padding-left:36px; }
     }
     .wizard-btns { display:flex; gap:12px; margin-top:28px; }
     .review { }
-    .review__header { font-size:15px; font-weight:700; color:#1B2A4A; margin-bottom:16px; }
+    .review__header { font-size:15px; font-weight:700; color:var(--color-primary); margin-bottom:16px; }
     .review__grid { display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-bottom:12px; }
-    .review__item, .review__obs { background:#F7F5F0; border-radius:4px; padding:12px; }
+    .review__item, .review__obs { background:var(--color-bg); border-radius:4px; padding:12px; }
     .review__obs { margin-bottom:12px; }
-    .review__key { font-size:11px; color:#8A93A8; margin-bottom:2px; }
-    .review__val { font-size:13px; font-weight:600; color:#1B2A4A; text-transform:capitalize; }
-    .review__ok { background:#EAF1EE; border:1px solid #A9C4BB; border-radius:4px; padding:14px 16px; display:flex; gap:12px; align-items:flex-start; }
+    .review__key { font-size:11px; color:var(--color-text-muted); margin-bottom:2px; }
+    .review__val { font-size:13px; font-weight:600; color:var(--color-primary); text-transform:capitalize; }
+    .review__ok { background:var(--color-success-light); border:1px solid var(--color-success-border); border-radius:4px; padding:14px 16px; display:flex; gap:12px; align-items:flex-start; }
   `],
 })
 export class CreateRequestComponent {

@@ -47,7 +47,7 @@ const STATUS_MAP: Record<string, { label: string; cls: string }> = {
   @if (filtered().length === 0) {
     <div class="card">
       <div class="empty-state">
-        <div class="empty-state__icon">📭</div>
+        <div class="empty-state__icon"></div>
         <p class="empty-state__title">Nenhuma solicitação encontrada</p>
         <p class="empty-state__desc">
           @if (activeFilter() === 'todas') { Crie sua primeira solicitação. }
@@ -74,7 +74,7 @@ const STATUS_MAP: Record<string, { label: string; cls: string }> = {
             <span class="teacher-avatar">{{r.professorConvidadoNome.charAt(0)}}</span>
             <span>{{r.professorConvidadoNome}}</span>
             @if (r.status === 'aguardando') { <span class="waiting-chip">Aguardando resposta</span> }
-            @if (r.status === 'confirmada') { <span class="confirmed-chip">✓ Confirmado</span> }
+            @if (r.status === 'confirmada') { <span class="confirmed-chip">Confirmado</span> }
           </div>
         }
 
@@ -110,38 +110,38 @@ const STATUS_MAP: Record<string, { label: string; cls: string }> = {
   `,
   styles: [`
     .page-top { display:flex; align-items:flex-start; justify-content:space-between; margin-bottom:24px; gap:16px; flex-wrap:wrap; }
-    .page-title { font-family:'Source Serif 4', Georgia, serif; font-size:23px; font-weight:600; color:#1B2A4A; }
-    .page-sub { font-size:13px; color:#8A93A8; margin-top:2px; }
-    .filter-tabs { display:flex; gap:4px; flex-wrap:wrap; margin-bottom:20px; background:#F1EFE8; padding:4px; border-radius:6px; }
+    .page-title { font-family:'Source Serif 4', Georgia, serif; font-size:23px; font-weight:600; color:var(--color-primary); }
+    .page-sub { font-size:13px; color:var(--color-text-muted); margin-top:2px; }
+    .filter-tabs { display:flex; gap:4px; flex-wrap:wrap; margin-bottom:20px; background:var(--color-neutral-light); padding:4px; border-radius:6px; }
     .filter-tab {
       display:flex; align-items:center; gap:6px;
-      padding:7px 14px; border-radius:4px; font-size:13px; font-weight:500; color:#4C5873;
+      padding:7px 14px; border-radius:4px; font-size:13px; font-weight:500; color:var(--color-text-secondary);
       transition:all .15s;
       &:hover { background:#fff; }
-      &.active { background:#fff; color:#1B2A4A; font-weight:600; }
+      &.active { background:#fff; color:var(--color-primary); font-weight:600; }
     }
     .tab-count {
-      background:#1B2A4A; color:#fff; font-size:11px; font-weight:700;
+      background:var(--color-primary); color:#fff; font-size:11px; font-weight:700;
       width:18px; height:18px; border-radius:50%; display:flex; align-items:center; justify-content:center;
     }
     .req-list { display:flex; flex-direction:column; gap:14px; }
-    .req-card { background:#fff; border:1px solid #DDD8CC; border-radius:6px; padding:20px; }
+    .req-card { background:#fff; border:1px solid var(--color-border); border-radius:6px; padding:20px; }
     .req-card__top { display:flex; align-items:flex-start; justify-content:space-between; margin-bottom:12px; gap:12px; }
-    .req-card__title { font-size:15px; font-weight:700; color:#1B2A4A; }
-    .req-card__sub { font-size:13px; color:#8A93A8; margin-top:2px; }
+    .req-card__title { font-size:15px; font-weight:700; color:var(--color-primary); }
+    .req-card__sub { font-size:13px; color:var(--color-text-muted); margin-top:2px; }
     .req-card__teacher {
       display:flex; align-items:center; gap:8px; padding:10px 12px;
-      background:#F7F5F0; border-radius:4px; font-size:13px; color:#33405E; margin-bottom:12px;
+      background:var(--color-bg); border-radius:4px; font-size:13px; color:var(--color-text-body); margin-bottom:12px;
     }
     .teacher-avatar {
-      width:28px; height:28px; border-radius:50%; background:#EEF1F6;
-      color:#1B2A4A; font-size:12px; font-weight:700;
+      width:28px; height:28px; border-radius:50%; background:var(--color-primary-light);
+      color:var(--color-primary); font-size:12px; font-weight:700;
       display:flex; align-items:center; justify-content:center;
     }
-    .waiting-chip { margin-left:auto; font-size:11px; font-weight:600; color:#1B2A4A; background:#EEF1F6; padding:3px 8px; border-radius:9999px; }
-    .confirmed-chip { margin-left:auto; font-size:11px; font-weight:600; color:#2F5D50; background:#EAF1EE; padding:3px 8px; border-radius:9999px; }
+    .waiting-chip { margin-left:auto; font-size:11px; font-weight:600; color:var(--color-primary); background:var(--color-primary-light); padding:3px 8px; border-radius:9999px; }
+    .confirmed-chip { margin-left:auto; font-size:11px; font-weight:600; color:var(--color-success); background:var(--color-success-light); padding:3px 8px; border-radius:9999px; }
     .req-card__footer { display:flex; align-items:center; justify-content:space-between; }
-    .req-card__val { font-size:13px; font-weight:600; color:#33405E; }
+    .req-card__val { font-size:13px; font-weight:600; color:var(--color-text-body); }
     .req-card__actions { display:flex; gap:8px; }
   `],
 })

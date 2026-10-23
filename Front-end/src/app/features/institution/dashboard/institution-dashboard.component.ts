@@ -1,6 +1,7 @@
 import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
+import { CountUpDirective } from '../../../core/count-up.directive';
 import { AppStateService } from '../../../core/services/app-state.service';
 import { SubRequest } from '../../../core/models/app.models';
 
@@ -16,7 +17,7 @@ const STATUS_MAP: Record<string, { label: string; cls: string }> = {
 @Component({
   selector: 'app-institution-dashboard',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, CountUpDirective],
   template: `
 <div class="page-content page-enter">
 
@@ -27,16 +28,14 @@ const STATUS_MAP: Record<string, { label: string; cls: string }> = {
       <p class="dash-date">{{today}}</p>
     </div>
     <button class="btn btn--primary" (click)="go('/instituicao/solicitar')">
-      <svg width="16" height="16" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M10 3a1 1 0 011 1v5h5a1 1 0 110 2h-5v5a1 1 0 11-2 0v-5H4a1 1 0 110-2h5V4a1 1 0 011-1z" clip-rule="evenodd"/></svg>
       Solicitar substituição
     </button>
   </div>
 
   <!-- Stats -->
-  <div class="stats-grid">
+  <div class="stats-grid stagger">
     <div class="stat-card" *ngFor="let s of stats">
-      <div class="stat-card__icon">{{s.icon}}</div>
-      <div class="stat-card__value">{{s.value}}</div>
+      <div class="stat-card__value" [countUp]="s.value"></div>
       <div class="stat-card__label">{{s.label}}</div>
     </div>
   </div>
@@ -50,7 +49,7 @@ const STATUS_MAP: Record<string, { label: string; cls: string }> = {
 
     @if (requests.length === 0) {
       <div class="empty-state">
-        <div class="empty-state__icon">📭</div>
+        <div class="empty-state__icon"></div>
         <p class="empty-state__title">Nenhuma solicitação ainda</p>
         <p class="empty-state__desc">Crie sua primeira solicitação de substituição</p>
         <button class="btn btn--primary" style="margin-top:16px" (click)="go('/instituicao/solicitar')">Solicitar substituição</button>
@@ -79,23 +78,23 @@ const STATUS_MAP: Record<string, { label: string; cls: string }> = {
   `,
   styles: [`
     .dash-header { display: flex; align-items: flex-start; justify-content: space-between; margin-bottom: 28px; gap: 16px; flex-wrap: wrap; }
-    .dash-title { font-family: 'Source Serif 4', Georgia, serif; font-size: 23px; font-weight: 600; color: #1B2A4A; }
-    .dash-date { font-size: 13px; color: #8A93A8; margin-top: 2px; }
+    .dash-title { font-family: 'Source Serif 4', Georgia, serif; font-size: 23px; font-weight: 600; color: var(--color-primary); }
+    .dash-date { font-size: 13px; color: var(--color-text-muted); margin-top: 2px; }
     .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px,1fr)); gap: 16px; margin-bottom: 24px; }
-    .card { background: #fff; border: 1px solid #DDD8CC; border-radius: 6px; overflow: hidden; }
-    .card-header { display: flex; align-items: center; justify-content: space-between; padding: 20px 24px; border-bottom: 1px solid #EDEAE1; }
-    .card-header__title { font-size: 15px; font-weight: 600; color: #1B2A4A; }
-    .link-btn { font-size: 13px; font-weight: 500; color: #1B2A4A; &:hover { text-decoration: underline; } }
+    .card { background: #fff; border: 1px solid var(--color-border); border-radius: 6px; overflow: hidden; }
+    .card-header { display: flex; align-items: center; justify-content: space-between; padding: 20px 24px; border-bottom: 1px solid var(--color-border-soft); }
+    .card-header__title { font-size: 15px; font-weight: 600; color: var(--color-primary); }
+    .link-btn { font-size: 13px; font-weight: 500; color: var(--color-primary); &:hover { text-decoration: underline; } }
     .req-list { padding: 8px; }
     .req-item {
       display: flex; align-items: center; justify-content: space-between;
       padding: 14px 16px; border-radius: 4px; cursor: pointer; gap: 12px;
       transition: background .15s;
-      &:hover { background: #F7F5F0; }
+      &:hover { background: var(--color-bg); }
     }
     .req-item__info { flex: 1; min-width: 0; }
-    .req-item__title { font-size: 14px; font-weight: 600; color: #1B2A4A; }
-    .req-item__sub { font-size: 12px; color: #8A93A8; margin-top: 2px; }
+    .req-item__title { font-size: 14px; font-weight: 600; color: var(--color-primary); }
+    .req-item__sub { font-size: 12px; color: var(--color-text-muted); margin-top: 2px; }
     .req-item__actions { display: flex; align-items: center; gap: 10px; flex-shrink: 0; }
   `],
 })
@@ -115,10 +114,10 @@ export class InstitutionDashboardComponent {
   get stats() {
     const reqs = this.requests;
     return [
-      { label: 'Solicitações ativas', value: reqs.filter(r => !['concluida','cancelada'].includes(r.status)).length, icon: '📋' },
-      { label: 'Aguardando resposta', value: reqs.filter(r => r.status === 'aguardando').length, icon: '⏳' },
-      { label: 'Confirmadas', value: reqs.filter(r => r.status === 'confirmada').length, icon: '✅' },
-      { label: 'Em aberto', value: reqs.filter(r => r.status === 'aberta').length, icon: '🔍' },
+      { label: 'Solicitações ativas', value: reqs.filter(r => !['concluida','cancelada'].includes(r.status)).length },
+      { label: 'Aguardando resposta', value: reqs.filter(r => r.status === 'aguardando').length },
+      { label: 'Confirmadas', value: reqs.filter(r => r.status === 'confirmada').length },
+      { label: 'Em aberto', value: reqs.filter(r => r.status === 'aberta').length },
     ];
   }
 

@@ -29,7 +29,6 @@ const COLOR_MAP: Record<string, string> = {
   <!-- Success banner -->
   @if (success()) {
     <div class="success-banner">
-      <span>✅</span>
       <p>{{success()}}</p>
     </div>
   }
@@ -47,11 +46,10 @@ const COLOR_MAP: Record<string, string> = {
     </div>
   } @else {
     <div class="no-req-warning">
-      <span>⚠️</span>
       <div>
-        <p style="font-size:14px;font-weight:600;color:#8A5A17">Nenhuma solicitação aberta</p>
-        <p style="font-size:13px;color:#8A5A17;margin-top:2px">Crie uma solicitação antes de convidar professores.</p>
-        <button class="link-btn" (click)="go('/instituicao/solicitar')" style="margin-top:4px">Criar solicitação →</button>
+        <p style="font-size:14px;font-weight:600;color:var(--color-warning-dark)">Nenhuma solicitação aberta</p>
+        <p style="font-size:13px;color:var(--color-warning-dark);margin-top:2px">Crie uma solicitação antes de convidar professores.</p>
+        <button class="link-btn" (click)="go('/instituicao/solicitar')" style="margin-top:4px">Criar solicitação</button>
       </div>
     </div>
   }
@@ -94,7 +92,7 @@ const COLOR_MAP: Record<string, string> = {
       @if (filtered().length === 0) {
         <div class="card">
           <div class="empty-state">
-            <div class="empty-state__icon">🔍</div>
+            <div class="empty-state__icon"></div>
             <p class="empty-state__title">Nenhum professor encontrado</p>
             <p class="empty-state__desc">Tente ajustar os filtros de busca.</p>
           </div>
@@ -109,7 +107,7 @@ const COLOR_MAP: Record<string, string> = {
                   <div>
                     <div class="teacher-name-row">
                       <h3 class="teacher-name">{{t.nome}}</h3>
-                      @if (t.verificado) { <span class="verified-badge">✓ Verificado</span> }
+                      @if (t.verificado) { <span class="verified-badge">Verificado</span> }
                     </div>
                     <p class="teacher-formacao">{{t.formacao}}</p>
                   </div>
@@ -120,10 +118,10 @@ const COLOR_MAP: Record<string, string> = {
                 </div>
 
                 <div class="teacher-stats">
-                  <span class="stars-row">{{starsStr(t.nota)}} <b>{{t.nota}}</b></span>
-                  <span>📚 {{t.experiencia}} anos</span>
-                  <span>📍 {{t.distancia}}</span>
-                  <span>🔄 {{t.subs}} subs</span>
+                  <span class="stars-row">Nota <b>{{t.nota}}</b></span>
+                  <span>{{t.experiencia}} anos de experiência</span>
+                  <span>{{t.distancia}}</span>
+                  <span>{{t.subs}} substituições</span>
                 </div>
 
                 <div class="teacher-tags">
@@ -140,7 +138,7 @@ const COLOR_MAP: Record<string, string> = {
                     </button>
                   }
                   @if (isInvited(t.id)) {
-                    <span class="invited-chip">✓ Convite enviado</span>
+                    <span class="invited-chip">Convite enviado</span>
                   }
                 </div>
               </div>
@@ -154,60 +152,60 @@ const COLOR_MAP: Record<string, string> = {
   `,
   styles: [`
     .page-top { display:flex; align-items:flex-start; justify-content:space-between; margin-bottom:20px; gap:16px; }
-    .page-title { font-family:'Source Serif 4', Georgia, serif; font-size:23px; font-weight:600; color:#1B2A4A; }
-    .page-sub { font-size:13px; color:#8A93A8; margin-top:2px; }
-    .success-banner { display:flex; align-items:center; gap:10px; background:#EAF1EE; border:1px solid #A9C4BB; border-radius:4px; padding:14px 16px; margin-bottom:16px; font-size:14px; font-weight:600; color:#2F5D50; }
-    .select-req-box { background:#EEF1F6; border:1px solid #C7CEDC; border-radius:4px; padding:16px; margin-bottom:20px;
-      p { font-size:14px; font-weight:600; color:#1B2A4A; margin-bottom:8px; }
+    .page-title { font-family:'Source Serif 4', Georgia, serif; font-size:23px; font-weight:600; color:var(--color-primary); }
+    .page-sub { font-size:13px; color:var(--color-text-muted); margin-top:2px; }
+    .success-banner { display:flex; align-items:center; gap:10px; background:var(--color-success-light); border:1px solid var(--color-success-border); border-left:4px solid var(--color-success); border-radius:4px; padding:14px 16px; margin-bottom:16px; font-size:14px; font-weight:600; color:var(--color-success); }
+    .select-req-box { background:var(--color-primary-light); border:1px solid var(--color-primary-muted); border-radius:4px; padding:16px; margin-bottom:20px;
+      p { font-size:14px; font-weight:600; color:var(--color-primary); margin-bottom:8px; }
     }
-    .select-req-label { font-size:14px; font-weight:600; color:#1B2A4A; margin-bottom:8px; }
-    .no-req-warning { display:flex; align-items:flex-start; gap:12px; background:#FBF3E6; border:1px solid #E4C691; border-radius:4px; padding:14px 16px; margin-bottom:20px; font-size:24px; }
-    .link-btn { font-size:13px; font-weight:600; color:#1B2A4A; &:hover{text-decoration:underline;} }
+    .select-req-label { font-size:14px; font-weight:600; color:var(--color-primary); margin-bottom:8px; }
+    .no-req-warning { display:flex; align-items:flex-start; gap:12px; background:var(--color-warning-light); border:1px solid var(--color-warning-border); border-left:4px solid var(--color-warning); border-radius:4px; padding:14px 16px; margin-bottom:20px; }
+    .link-btn { font-size:13px; font-weight:600; color:var(--color-primary); &:hover{text-decoration:underline;} }
     .search-layout { display:flex; gap:24px; align-items:flex-start; }
     @media(max-width:900px) { .search-layout { flex-direction:column; } .search-layout .filters-panel { width:100%; } }
-    .filters-panel { width:220px; flex-shrink:0; background:#fff; border:1px solid #DDD8CC; border-radius:6px; padding:20px; }
-    .filters-title { font-size:14px; font-weight:700; color:#1B2A4A; margin-bottom:16px; }
+    .filters-panel { width:220px; flex-shrink:0; background:#fff; border:1px solid var(--color-border); border-radius:6px; padding:20px; }
+    .filters-title { font-size:14px; font-weight:700; color:var(--color-primary); margin-bottom:16px; }
     .filter-group { margin-bottom:14px; }
-    .filter-label { display:block; font-size:11px; font-weight:600; color:#8A93A8; text-transform:uppercase; letter-spacing:.05em; margin-bottom:6px; }
-    .filter-check { display:flex; align-items:center; gap:8px; font-size:13px; color:#33405E; cursor:pointer;
-      input { accent-color:#1B2A4A; }
+    .filter-label { display:block; font-size:11px; font-weight:600; color:var(--color-text-muted); text-transform:uppercase; letter-spacing:.05em; margin-bottom:6px; }
+    .filter-check { display:flex; align-items:center; gap:8px; font-size:13px; color:var(--color-text-body); cursor:pointer;
+      input { accent-color:var(--color-primary); }
     }
     .sort-group { display:flex; flex-direction:column; gap:4px; }
-    .sort-btn { padding:6px 10px; border-radius:4px; font-size:12px; font-weight:500; color:#4C5873; text-align:left; transition:all .15s;
-      &:hover { background:#F7F5F0; }
-      &.active { background:#EEF1F6; color:#1B2A4A; font-weight:600; }
+    .sort-btn { padding:6px 10px; border-radius:4px; font-size:12px; font-weight:500; color:var(--color-text-secondary); text-align:left; transition:all .15s;
+      &:hover { background:var(--color-bg); }
+      &.active { background:var(--color-primary-light); color:var(--color-primary); font-weight:600; }
     }
     .results { flex:1; min-width:0; }
-    .results-count { font-size:13px; color:#8A93A8; margin-bottom:12px; }
+    .results-count { font-size:13px; color:var(--color-text-muted); margin-bottom:12px; }
     .teacher-list { display:flex; flex-direction:column; gap:14px; }
-    .teacher-card { background:#fff; border:1px solid #DDD8CC; border-radius:6px; padding:20px; transition:border-color .2s;
-      &:hover { border-color:#C3BCAB; }
+    .teacher-card { background:#fff; border:1px solid var(--color-border); border-radius:6px; padding:20px; transition:border-color .2s;
+      &:hover { border-color:var(--color-border-hover); }
     }
     .teacher-card__inner { display:flex; gap:16px; }
     .teacher-avatar { width:50px; height:50px; border-radius:4px; font-size:16px; font-weight:700; display:flex; align-items:center; justify-content:center; flex-shrink:0;
-      &--blue { background:#EEF1F6; color:#1B2A4A; }
-      &--green { background:#EAF1EE; color:#2F5D50; }
+      &--blue { background:var(--color-primary-light); color:var(--color-primary); }
+      &--green { background:var(--color-success-light); color:var(--color-success); }
       &--purple { background:#EEE9F6; color:#4A3B7A; }
-      &--amber { background:#FBF3E6; color:#8A5A17; }
+      &--amber { background:var(--color-warning-light); color:var(--color-warning-dark); }
     }
     .teacher-info { flex:1; min-width:0; }
     .teacher-info__top { display:flex; align-items:flex-start; justify-content:space-between; margin-bottom:8px; gap:10px; }
     .teacher-name-row { display:flex; align-items:center; gap:8px; flex-wrap:wrap; }
-    .teacher-name { font-size:16px; font-weight:700; color:#1B2A4A; }
-    .teacher-formacao { font-size:12px; color:#8A93A8; margin-top:2px; }
-    .verified-badge { background:#EEF1F6; color:#1B2A4A; font-size:11px; font-weight:600; padding:2px 8px; border-radius:9999px; border:1px solid #C7CEDC; }
-    .teacher-avail { font-size:12px; font-weight:500; color:#8A93A8; display:flex; align-items:center; gap:4px; flex-shrink:0;
-      &.available { color:#2F5D50; }
+    .teacher-name { font-size:16px; font-weight:700; color:var(--color-primary); }
+    .teacher-formacao { font-size:12px; color:var(--color-text-muted); margin-top:2px; }
+    .verified-badge { background:var(--color-primary-light); color:var(--color-primary); font-size:11px; font-weight:600; padding:2px 8px; border-radius:9999px; border:1px solid var(--color-primary-muted); }
+    .teacher-avail { font-size:12px; font-weight:500; color:var(--color-text-muted); display:flex; align-items:center; gap:4px; flex-shrink:0;
+      &.available { color:var(--color-success); }
     }
-    .avail-dot { width:6px; height:6px; border-radius:50%; background:#C7CEDC;
-      &.green { background:#2F5D50; }
+    .avail-dot { width:6px; height:6px; border-radius:50%; background:var(--color-primary-muted);
+      &.green { background:var(--color-success); }
     }
-    .teacher-stats { display:flex; align-items:center; gap:14px; flex-wrap:wrap; font-size:12px; color:#4C5873; margin-bottom:8px; }
-    .stars-row { display:flex; align-items:center; gap:4px; b { color:#1B2A4A; } }
+    .teacher-stats { display:flex; align-items:center; gap:14px; flex-wrap:wrap; font-size:12px; color:var(--color-text-secondary); margin-bottom:8px; }
+    .stars-row { display:flex; align-items:center; gap:4px; b { color:var(--color-primary); } }
     .teacher-tags { display:flex; flex-wrap:wrap; gap:6px; margin-bottom:10px; }
-    .tag { background:#F1EFE8; color:#4C5873; font-size:12px; padding:3px 8px; border-radius:4px; }
+    .tag { background:var(--color-neutral-light); color:var(--color-text-secondary); font-size:12px; padding:3px 8px; border-radius:4px; }
     .teacher-actions { display:flex; gap:8px; flex-wrap:wrap; }
-    .invited-chip { font-size:12px; font-weight:600; color:#1B2A4A; background:#EEF1F6; padding:6px 12px; border-radius:4px; }
+    .invited-chip { font-size:12px; font-weight:600; color:var(--color-primary); background:var(--color-primary-light); padding:6px 12px; border-radius:4px; }
   `],
 })
 export class SearchTeachersComponent {
@@ -285,10 +283,6 @@ export class SearchTeachersComponent {
     finally { this.busy.set(false); }
   }
 
-  starsStr(nota: number) {
-    const full = Math.round(nota);
-    return '★'.repeat(full) + '☆'.repeat(5 - full);
-  }
   fmtDate(data: string) {
     if (!data) return '';
     const [y, m, d] = data.split('-');

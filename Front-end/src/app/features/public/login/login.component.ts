@@ -1,3 +1,4 @@
+import { LogoMarkComponent } from '../../../core/logo-mark.component';
 import { Component, signal } from '@angular/core';
 import { Router } from '@angular/router';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
@@ -9,7 +10,7 @@ type View = 'login' | 'register';
 @Component({
   selector: 'app-login',
   standalone: true,
-  imports: [ReactiveFormsModule],
+  imports: [LogoMarkComponent, ReactiveFormsModule],
   template: `
 <div class="login-page">
 
@@ -23,12 +24,7 @@ type View = 'login' | 'register';
     <div class="login-left__overlay"></div>
     <div class="login-left__top">
       <div class="logo">
-        <div class="logo__icon">
-          <svg width="18" height="18" viewBox="0 0 18 18" fill="none">
-            <path d="M9 1.5L15.5 5.25V12.75L9 16.5L2.5 12.75V5.25L9 1.5Z" fill="white"/>
-            <path d="M6 9L8.5 11.5L12.5 7" stroke="#1B2A4A" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-          </svg>
-        </div>
+        <app-logo-mark [size]="38" [onDark]="true" />
         <span class="logo__text logo__text--white">Aula<span class="logo__accent--light">Sempre</span></span>
       </div>
     </div>
@@ -44,7 +40,7 @@ type View = 'login' | 'register';
     <!-- Mobile logo -->
     <div class="login-mobile-logo">
       <div class="logo">
-        <div class="logo__icon"><svg width="16" height="16" viewBox="0 0 18 18" fill="none"><path d="M9 1.5L15.5 5.25V12.75L9 16.5L2.5 12.75V5.25L9 1.5Z" fill="white"/></svg></div>
+        <app-logo-mark [size]="34" />
         <span class="logo__text">Aula<span class="logo__accent">Sempre</span></span>
       </div>
     </div>
@@ -81,11 +77,7 @@ type View = 'login' | 'register';
                 class="form-input" />
               <button type="button" class="eye-btn" (click)="showPassword.set(!showPassword())"
                 [attr.aria-label]="showPassword() ? 'Ocultar senha' : 'Mostrar senha'">
-                @if (showPassword()) {
-                  <svg width="18" height="18" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M1 10s3.5-6 9-6 9 6 9 6-3.5 6-9 6-9-6-9-6z"/><circle cx="10" cy="10" r="3"/></svg>
-                } @else {
-                  <svg width="18" height="18" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3l14 14M10 4c5.5 0 9 6 9 6s-.9 1.65-2.42 3.13M6.62 6.6C4.48 7.98 3 10 3 10s3.5 6 9 6a9.2 9.2 0 0 0 3.38-.63"/></svg>
-                }
+                {{ showPassword() ? 'Ocultar' : 'Mostrar' }}
               </button>
               @if (errorMessage()) {
                 <p class="form-error">{{errorMessage()}}</p>
@@ -126,7 +118,6 @@ type View = 'login' | 'register';
       <!-- ─── Register View ───────────────────────────────────── -->
       @if (view() === 'register') {
         <button type="button" class="back-btn" (click)="view.set('login')">
-          <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor"><path fill-rule="evenodd" d="M9.707 4.293a1 1 0 010 1.414L7.414 8l2.293 2.293a1 1 0 01-1.414 1.414l-3-3a1 1 0 010-1.414l3-3a1 1 0 011.414 0z" clip-rule="evenodd"/></svg>
           Voltar ao login
         </button>
         <h1 class="login-title">Crie sua conta</h1>
@@ -140,8 +131,8 @@ type View = 'login' | 'register';
           <div class="field"><label class="form-label">Estado</label><input class="form-input" formControlName="state" maxlength="2" placeholder="SP" /></div>
           <div class="field"><label class="form-label">Telefone</label><input class="form-input" formControlName="phone" placeholder="(11) 99999-9999" /></div>
           <div class="profile-cards">
-            <button type="button" class="profile-card" (click)="selectRegisterRole('PROFESSOR')">👩‍🏫 Sou professor</button>
-            <button type="button" class="profile-card" (click)="selectRegisterRole('ESCOLA')">🏫 Sou uma escola</button>
+            <button type="button" class="profile-card" (click)="selectRegisterRole('PROFESSOR')">Sou professor</button>
+            <button type="button" class="profile-card" (click)="selectRegisterRole('ESCOLA')">Sou uma escola</button>
           </div>
           @if (registerError()) { <p class="form-error">{{registerError()}}</p> }
           <button type="submit" class="btn btn--primary btn--block btn--lg" [disabled]="registerLoading()">{{registerLoading() ? 'Cadastrando…' : 'Criar conta'}}</button>
@@ -152,7 +143,7 @@ type View = 'login' | 'register';
       }
 
       <div class="back-home">
-        <button (click)="go('/')">← Voltar para o início</button>
+        <button (click)="go('/')">Voltar para o início</button>
       </div>
 
     </div>
@@ -167,17 +158,17 @@ type View = 'login' | 'register';
       display: none;
       position: relative; flex-direction: column; justify-content: space-between;
       padding: 40px; width: 44%; flex-shrink: 0; overflow: hidden;
-      background: #1B2A4A;
+      background: var(--color-primary);
     }
     @media(min-width: 768px) { .login-left { display: flex; } }
     .login-left__photo { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; opacity: .35; }
     .login-left__overlay { position: absolute; inset: 0; background: linear-gradient(to bottom, rgba(27,42,74,.7), rgba(27,42,74,.35), rgba(27,42,74,.8)); }
     .login-left__top, .login-left__bottom { position: relative; z-index: 1; }
     .login-left__quote { font-family: 'Source Serif 4', Georgia, serif; font-size: clamp(22px, 2.5vw, 30px); font-weight: 600; color: #fff; line-height: 1.3; margin-bottom: 10px; }
-    .login-left__sub { font-size: 14px; color: #C7CEDC; line-height: 1.6; max-width: 300px; }
+    .login-left__sub { font-size: 14px; color: var(--color-primary-muted); line-height: 1.6; max-width: 300px; }
 
     /* Right */
-    .login-right { flex: 1; display: flex; flex-direction: column; min-height: 100vh; background: #F7F5F0; }
+    .login-right { flex: 1; display: flex; flex-direction: column; min-height: 100vh; background: var(--color-bg); }
     .login-mobile-logo { padding: 28px 24px 0; display: block; }
     @media(min-width: 768px) { .login-mobile-logo { display: none; } }
     .login-form-wrap {
@@ -187,69 +178,68 @@ type View = 'login' | 'register';
 
     /* Logo */
     .logo { display: flex; align-items: center; gap: 10px; }
-    .logo__icon { width: 34px; height: 34px; background: #1B2A4A; border-radius: 4px; display: flex; align-items: center; justify-content: center; }
-    .logo__text { font-family: 'Source Serif 4', Georgia, serif; font-size: 17px; font-weight: 600; color: #1B2A4A; }
+    .logo__text { font-family: 'Source Serif 4', Georgia, serif; font-size: 17px; font-weight: 600; color: var(--color-primary); }
     .logo__text--white { color: #fff; }
-    .logo__accent { color: #B97E24; }
+    .logo__accent { color: var(--color-warning); }
     .logo__accent--light { color: #D7B687; }
 
     /* Form */
-    .login-title { font-family: 'Source Serif 4', Georgia, serif; font-size: 25px; font-weight: 600; color: #1B2A4A; margin-bottom: 6px; }
-    .login-sub { font-size: 14px; color: #4C5873; margin-bottom: 28px; }
+    .login-title { font-family: 'Source Serif 4', Georgia, serif; font-size: 25px; font-weight: 600; color: var(--color-primary); margin-bottom: 6px; }
+    .login-sub { font-size: 14px; color: var(--color-text-secondary); margin-bottom: 28px; }
     .login-form { display: flex; flex-direction: column; gap: 18px; }
     .field { display: flex; flex-direction: column; }
     .field__row { display: flex; align-items: center; justify-content: space-between; margin-bottom: 6px; }
-    .forgot-link { font-size: 12px; color: #1B2A4A; &:hover { text-decoration: underline; } }
+    .forgot-link { font-size: 12px; color: var(--color-primary); &:hover { text-decoration: underline; } }
     .input-wrap { position: relative; }
     .eye-btn {
       position: absolute; right: 12px; top: 50%; transform: translateY(-50%);
-      color: #8A93A8; padding: 4px;
-      &:hover { color: #4C5873; }
+      color: var(--color-text-secondary); padding: 4px; font-size: 12px; font-weight: 600;
+      &:hover { color: var(--color-text-secondary); }
     }
 
     .remember-label {
       display: flex; align-items: center; gap: 10px; cursor: pointer;
-      font-size: 14px; color: #4C5873;
+      font-size: 14px; color: var(--color-text-secondary);
     }
     .custom-checkbox {
       width: 16px; height: 16px; border-radius: 3px;
-      border: 2px solid #C7CEDC; background: #fff; flex-shrink: 0;
+      border: 2px solid var(--color-primary-muted); background: #fff; flex-shrink: 0;
       display: flex; align-items: center; justify-content: center;
       transition: all .15s;
-      &.checked { border-color: #1B2A4A; background: #1B2A4A; }
+      &.checked { border-color: var(--color-primary); background: var(--color-primary); }
     }
 
     .demo-notice {
-      margin-top: 16px; background: #FBF3E6; border: 1px solid #E4C691;
-      border-radius: 4px; padding: 12px 14px; font-size: 12px; color: #8A5A17; line-height: 1.5;
+      margin-top: 16px; background: var(--color-warning-light); border: 1px solid var(--color-warning-border);
+      border-radius: 4px; padding: 12px 14px; font-size: 12px; color: var(--color-warning-dark); line-height: 1.5;
     }
-    .login-switch { margin-top: 20px; text-align: center; font-size: 14px; color: #4C5873;
-      button { color: #1B2A4A; font-weight: 600; &:hover { text-decoration: underline; } }
+    .login-switch { margin-top: 20px; text-align: center; font-size: 14px; color: var(--color-text-secondary);
+      button { color: var(--color-primary); font-weight: 600; &:hover { text-decoration: underline; } }
     }
 
     /* Register */
     .back-btn {
       display: flex; align-items: center; gap: 6px; font-size: 13px;
-      color: #4C5873; margin-bottom: 20px; &:hover { color: #1B2A4A; }
+      color: var(--color-text-secondary); margin-bottom: 20px; &:hover { color: var(--color-primary); }
     }
     .profile-cards { display: flex; flex-direction: column; gap: 12px; margin-bottom: 4px; }
     .profile-card {
       width: 100%; display: flex; align-items: center; gap: 14px;
-      background: #fff; border: 1.5px solid #DDD8CC; border-radius: 6px;
+      background: #fff; border: 1.5px solid var(--color-border); border-radius: 6px;
       padding: 18px; text-align: left; transition: all .15s;
-      &:hover { border-color: #1B2A4A; }
+      &:hover { border-color: var(--color-primary); }
     }
     .profile-card__icon {
-      width: 46px; height: 46px; background: #EEF1F6; border-radius: 4px;
+      width: 46px; height: 46px; background: var(--color-primary-light); border-radius: 4px;
       display: flex; align-items: center; justify-content: center; font-size: 22px; flex-shrink: 0;
     }
-    .profile-card__name { font-size: 14px; font-weight: 600; color: #1B2A4A; margin-bottom: 2px; }
-    .profile-card__desc { font-size: 12px; color: #4C5873; line-height: 1.4; }
-    .profile-card__arrow { margin-left: auto; color: #C7CEDC; flex-shrink: 0; }
+    .profile-card__name { font-size: 14px; font-weight: 600; color: var(--color-primary); margin-bottom: 2px; }
+    .profile-card__desc { font-size: 12px; color: var(--color-text-secondary); line-height: 1.4; }
+    .profile-card__arrow { margin-left: auto; color: var(--color-primary-muted); flex-shrink: 0; }
 
     .back-home {
       margin-top: 28px; text-align: center;
-      button { font-size: 12px; color: #8A93A8; &:hover { color: #4C5873; } }
+      button { font-size: 12px; color: var(--color-text-muted); &:hover { color: var(--color-text-secondary); } }
     }
   `],
 })

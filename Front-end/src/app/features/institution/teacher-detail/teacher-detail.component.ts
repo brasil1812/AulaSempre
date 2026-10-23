@@ -13,13 +13,12 @@ import { errorMessage } from '../../../core/services/api.service';
   template: `
 <div class="page-content page-enter">
   <button class="back-btn" (click)="go('/instituicao/professores')">
-    <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor"><path fill-rule="evenodd" d="M9.707 4.293a1 1 0 010 1.414L7.414 8l2.293 2.293a1 1 0 01-1.414 1.414l-3-3a1 1 0 010-1.414l3-3a1 1 0 011.414 0z" clip-rule="evenodd"/></svg>
     Voltar para busca
   </button>
 
   @if (!teacher) {
     <div class="card" style="padding:48px;text-align:center">
-      <p style="color:#94A3B8">Professor não encontrado.</p>
+      <p style="color:var(--color-text-muted)">Professor não encontrado.</p>
     </div>
   } @else {
     <div class="profile-grid">
@@ -30,7 +29,7 @@ import { errorMessage } from '../../../core/services/api.service';
           <div>
             <div class="profile-name-row">
               <h1 class="profile-name">{{teacher.nome}}</h1>
-              @if (teacher.verificado) { <span class="verified">✓ Verificado</span> }
+              @if (teacher.verificado) { <span class="verified">Verificado</span> }
             </div>
             <p class="profile-formacao">{{teacher.formacao}}</p>
             <div class="profile-avail" [class.green]="teacher.disponivel">
@@ -99,7 +98,7 @@ import { errorMessage } from '../../../core/services/api.service';
           </select>
 
           @if (invited()) {
-            <div class="invite-success">✓ Convite enviado! Aguardando resposta do professor.</div>
+            <div class="invite-success">Convite enviado! Aguardando resposta do professor.</div>
           } @else {
             <button class="btn btn--primary btn--block" [disabled]="!selectedId || !teacher.disponivel || busy()" (click)="sendInvite()">
               {{!teacher.disponivel ? 'Professor indisponível' : !selectedId ? 'Selecione uma solicitação' : 'Enviar convite'}}
@@ -108,7 +107,7 @@ import { errorMessage } from '../../../core/services/api.service';
         }
 
         <div class="city-info">
-          <span>📍</span> {{teacher.cidade}} · {{teacher.distancia}}
+          {{teacher.cidade}} · {{teacher.distancia}}
         </div>
       </div>
     </div>
@@ -116,38 +115,38 @@ import { errorMessage } from '../../../core/services/api.service';
 </div>
   `,
   styles: [`
-    .back-btn { display:flex; align-items:center; gap:6px; font-size:13px; color:#4C5873; margin-bottom:20px; &:hover{color:#1B2A4A;} }
+    .back-btn { display:flex; align-items:center; gap:6px; font-size:13px; color:var(--color-text-secondary); margin-bottom:20px; &:hover{color:var(--color-primary);} }
     .profile-grid { display:grid; grid-template-columns:1fr 300px; gap:24px; align-items:start; }
     @media(max-width:900px) { .profile-grid { grid-template-columns:1fr; } }
     .profile-main { padding:28px; }
     .profile-header { display:flex; gap:18px; align-items:flex-start; margin-bottom:24px; }
     .profile-avatar { width:70px; height:70px; border-radius:4px; font-size:22px; font-weight:700; display:flex; align-items:center; justify-content:center; flex-shrink:0;
-      &.avatar--blue { background:#EEF1F6; color:#1B2A4A; }
-      &.avatar--green { background:#EAF1EE; color:#2F5D50; }
+      &.avatar--blue { background:var(--color-primary-light); color:var(--color-primary); }
+      &.avatar--green { background:var(--color-success-light); color:var(--color-success); }
       &.avatar--purple { background:#EEE9F6; color:#4A3B7A; }
     }
     .profile-name-row { display:flex; align-items:center; gap:10px; flex-wrap:wrap; margin-bottom:4px; }
-    .profile-name { font-family:'Source Serif 4', Georgia, serif; font-size:22px; font-weight:600; color:#1B2A4A; }
-    .profile-formacao { font-size:13px; color:#8A93A8; margin-bottom:8px; }
-    .profile-avail { display:flex; align-items:center; gap:6px; font-size:13px; color:#8A93A8; &.green{color:#2F5D50;} }
-    .avail-dot { width:7px; height:7px; border-radius:50%; background:#C7CEDC; &.green{background:#2F5D50;} }
-    .verified { background:#EEF1F6; color:#1B2A4A; font-size:11px; font-weight:600; padding:3px 9px; border-radius:9999px; border:1px solid #C7CEDC; }
+    .profile-name { font-family:'Source Serif 4', Georgia, serif; font-size:22px; font-weight:600; color:var(--color-primary); }
+    .profile-formacao { font-size:13px; color:var(--color-text-muted); margin-bottom:8px; }
+    .profile-avail { display:flex; align-items:center; gap:6px; font-size:13px; color:var(--color-text-muted); &.green{color:var(--color-success);} }
+    .avail-dot { width:7px; height:7px; border-radius:50%; background:var(--color-primary-muted); &.green{background:var(--color-success);} }
+    .verified { background:var(--color-primary-light); color:var(--color-primary); font-size:11px; font-weight:600; padding:3px 9px; border-radius:9999px; border:1px solid var(--color-primary-muted); }
     .stats-row { display:grid; grid-template-columns:repeat(4,1fr); gap:12px; margin-bottom:24px; }
-    .stat-pill { background:#F7F5F0; border-radius:4px; padding:14px; text-align:center; }
-    .stat-pill__val { display:block; font-family:'Source Serif 4', Georgia, serif; font-size:20px; font-weight:600; color:#1B2A4A; }
-    .stat-pill__lbl { display:block; font-size:11px; color:#8A93A8; margin-top:2px; }
+    .stat-pill { background:var(--color-bg); border-radius:4px; padding:14px; text-align:center; }
+    .stat-pill__val { display:block; font-family:'Source Serif 4', Georgia, serif; font-size:20px; font-weight:600; color:var(--color-primary); }
+    .stat-pill__lbl { display:block; font-size:11px; color:var(--color-text-muted); margin-top:2px; }
     .profile-section { margin-bottom:20px; }
-    .section-title { font-size:14px; font-weight:600; color:#1B2A4A; margin-bottom:10px; }
-    .profile-bio { font-size:14px; color:#4C5873; line-height:1.6; }
+    .section-title { font-size:14px; font-weight:600; color:var(--color-primary); margin-bottom:10px; }
+    .profile-bio { font-size:14px; color:var(--color-text-secondary); line-height:1.6; }
     .tags { display:flex; flex-wrap:wrap; gap:8px; }
-    .tag { background:#F1EFE8; color:#4C5873; font-size:13px; padding:5px 12px; border-radius:4px; }
-    .tag--green { background:#EAF1EE; color:#2F5D50; }
+    .tag { background:var(--color-neutral-light); color:var(--color-text-secondary); font-size:13px; padding:5px 12px; border-radius:4px; }
+    .tag--green { background:var(--color-success-light); color:var(--color-success); }
     .invite-panel { padding:24px; }
-    .invite-title { font-size:16px; font-weight:700; color:#1B2A4A; margin-bottom:16px; }
-    .invite-label { font-size:13px; font-weight:500; color:#4C5873; margin-bottom:6px; }
-    .no-reqs { font-size:13px; color:#8A93A8; }
-    .invite-success { background:#EAF1EE; color:#2F5D50; font-size:13px; font-weight:600; padding:12px 14px; border-radius:4px; border:1px solid #A9C4BB; }
-    .city-info { margin-top:16px; font-size:13px; color:#8A93A8; }
+    .invite-title { font-size:16px; font-weight:700; color:var(--color-primary); margin-bottom:16px; }
+    .invite-label { font-size:13px; font-weight:500; color:var(--color-text-secondary); margin-bottom:6px; }
+    .no-reqs { font-size:13px; color:var(--color-text-muted); }
+    .invite-success { background:var(--color-success-light); color:var(--color-success); font-size:13px; font-weight:600; padding:12px 14px; border-radius:4px; border:1px solid var(--color-success-border); }
+    .city-info { margin-top:16px; font-size:13px; color:var(--color-text-muted); }
   `],
 })
 export class TeacherDetailComponent implements OnInit {

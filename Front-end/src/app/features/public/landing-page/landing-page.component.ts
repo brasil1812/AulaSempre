@@ -1,11 +1,12 @@
 import { Component } from '@angular/core';
+import { LogoMarkComponent } from '../../../core/logo-mark.component';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-landing-page',
   standalone: true,
-  imports: [CommonModule],
+  imports: [LogoMarkComponent, CommonModule],
   template: `
 <div class="landing">
 
@@ -13,12 +14,7 @@ import { Router } from '@angular/router';
   <nav class="landing-nav">
     <div class="landing-nav__inner">
       <div class="logo">
-        <div class="logo__icon">
-          <svg width="18" height="18" viewBox="0 0 18 18" fill="none">
-            <path d="M9 1.5L15.5 5.25V12.75L9 16.5L2.5 12.75V5.25L9 1.5Z" fill="white"/>
-            <path d="M6 9L8.5 11.5L12.5 7" stroke="#1B2A4A" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-          </svg>
-        </div>
+        <app-logo-mark [size]="34" />
         <span class="logo__text">Aula<span class="logo__accent">Sempre</span></span>
       </div>
       <div class="landing-nav__actions">
@@ -61,7 +57,6 @@ import { Router } from '@angular/router';
       <div class="steps-grid">
         <div class="step-card" *ngFor="let s of steps">
           <div class="step-card__num">{{s.num}}</div>
-          <div class="step-card__icon">{{s.icon}}</div>
           <h3 class="step-card__title">{{s.title}}</h3>
           <p class="step-card__desc">{{s.desc}}</p>
         </div>
@@ -79,7 +74,6 @@ import { Router } from '@angular/router';
         <!-- Instituição -->
         <div class="benefit-card benefit-card--blue">
           <div class="benefit-card__header">
-            <div class="benefit-card__icon">🏫</div>
             <div>
               <h3 class="benefit-card__title">Para instituições</h3>
               <p class="benefit-card__sub">Escolas e faculdades privadas</p>
@@ -87,17 +81,16 @@ import { Router } from '@angular/router';
           </div>
           <ul class="benefit-list">
             <li *ngFor="let b of institutionBenefits" class="benefit-list__item">
-              <span class="benefit-list__check benefit-list__check--blue">✓</span>
+              <span class="benefit-list__check benefit-list__check--blue tick"></span>
               <span>{{b}}</span>
             </li>
           </ul>
-          <button class="btn btn--primary btn--block" (click)="go('/demo?perfil=instituicao')">Sou uma instituição →</button>
+          <button class="btn btn--primary btn--block" (click)="go('/demo?perfil=instituicao')">Sou uma instituição</button>
         </div>
 
         <!-- Professor -->
         <div class="benefit-card benefit-card--green">
           <div class="benefit-card__header">
-            <div class="benefit-card__icon benefit-card__icon--green">👩‍🏫</div>
             <div>
               <h3 class="benefit-card__title">Para professores</h3>
               <p class="benefit-card__sub">Licenciados disponíveis para substituições</p>
@@ -105,11 +98,11 @@ import { Router } from '@angular/router';
           </div>
           <ul class="benefit-list">
             <li *ngFor="let b of teacherBenefits" class="benefit-list__item">
-              <span class="benefit-list__check benefit-list__check--green">✓</span>
+              <span class="benefit-list__check benefit-list__check--green tick"></span>
               <span>{{b}}</span>
             </li>
           </ul>
-          <button class="btn btn--success btn--block" (click)="go('/demo?perfil=professor')">Sou professor →</button>
+          <button class="btn btn--success btn--block" (click)="go('/demo?perfil=professor')">Sou professor</button>
         </div>
       </div>
     </div>
@@ -129,11 +122,7 @@ import { Router } from '@angular/router';
   <footer class="footer">
     <div class="footer__inner">
       <div class="logo">
-        <div class="logo__icon">
-          <svg width="14" height="14" viewBox="0 0 18 18" fill="none">
-            <path d="M9 1.5L15.5 5.25V12.75L9 16.5L2.5 12.75V5.25L9 1.5Z" fill="white"/>
-          </svg>
-        </div>
+        <app-logo-mark [size]="30" [onDark]="true" />
         <span class="footer__logo-text">Aula<span class="footer__logo-accent">Sempre</span></span>
       </div>
       <p class="footer__copy">Protótipo acadêmico — versão de demonstração. Não há serviço real em operação.</p>
@@ -153,7 +142,7 @@ import { Router } from '@angular/router';
     .landing-nav {
       position: sticky; top: 0; z-index: 40;
       background: rgba(255,255,255,.95); backdrop-filter: blur(12px);
-      border-bottom: 1px solid #DDD8CC;
+      border-bottom: 1px solid var(--color-border);
     }
     .landing-nav__inner {
       max-width: 1100px; margin: 0 auto; padding: 0 24px;
@@ -163,16 +152,12 @@ import { Router } from '@angular/router';
 
     /* Logo */
     .logo { display: flex; align-items: center; gap: 10px; }
-    .logo__icon {
-      width: 36px; height: 36px; background: #1B2A4A;
-      border-radius: 4px; display: flex; align-items: center; justify-content: center;
-    }
-    .logo__text { font-family: 'Source Serif 4', Georgia, serif; font-size: 19px; font-weight: 600; color: #1B2A4A; }
-    .logo__accent { color: #B97E24; }
+    .logo__text { font-family: 'Source Serif 4', Georgia, serif; font-size: 19px; font-weight: 600; color: var(--color-primary); }
+    .logo__accent { color: var(--color-warning); }
 
     /* Hero */
     .hero {
-      background: #1B2A4A;
+      background: var(--color-primary);
       position: relative; overflow: hidden;
     }
     .hero__grid-bg {
@@ -193,7 +178,7 @@ import { Router } from '@angular/router';
       margin-bottom: 28px;
     }
     .hero__badge-dot {
-      width: 6px; height: 6px; background: #B97E24;
+      width: 6px; height: 6px; background: var(--color-warning);
       border-radius: 50%; animation: pulse 2s infinite;
     }
     @keyframes pulse {
@@ -206,14 +191,14 @@ import { Router } from '@angular/router';
     }
     .hero__title-light { color: #AEB9CF; }
     .hero__desc {
-      font-size: 18px; color: #C7CEDC; max-width: 600px;
+      font-size: 18px; color: var(--color-primary-muted); max-width: 600px;
       line-height: 1.6; margin-bottom: 36px;
     }
     .hero__actions { display: flex; gap: 14px; flex-wrap: wrap; }
     .hero__btn-inst {
-      background: #fff; color: #1B2A4A; font-weight: 700;
+      background: #fff; color: var(--color-primary); font-weight: 700;
       padding: 14px 28px; border-radius: 4px; font-size: 15px;
-      &:hover { background: #EEF1F6; }
+      &:hover { background: var(--color-primary-light); }
     }
     .hero__btn-prof {
       background: transparent; color: #fff; font-weight: 700;
@@ -224,66 +209,65 @@ import { Router } from '@angular/router';
 
     /* Sections */
     .section { padding: 80px 0; }
-    .section--gray { background: #F7F5F0; }
+    .section--gray { background: var(--color-bg); }
     .section__inner { max-width: 1100px; margin: 0 auto; padding: 0 24px; }
     .section__header { text-align: center; margin-bottom: 48px; }
-    .section__title { font-family: 'Source Serif 4', Georgia, serif; font-size: 32px; font-weight: 600; color: #1B2A4A; margin-bottom: 10px; }
-    .section__desc { color: #4C5873; max-width: 480px; margin: 0 auto; font-size: 15px; }
+    .section__title { font-family: 'Source Serif 4', Georgia, serif; font-size: 32px; font-weight: 600; color: var(--color-primary); margin-bottom: 10px; }
+    .section__desc { color: var(--color-text-secondary); max-width: 480px; margin: 0 auto; font-size: 15px; }
 
     /* Steps */
     .steps-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 20px; }
     .step-card {
-      background: #fff; border: 1px solid #DDD8CC;
+      background: #fff; border: 1px solid var(--color-border);
       border-radius: 6px; padding: 32px;
       transition: border-color .2s;
-      &:hover { border-color: #C3BCAB; }
+      &:hover { border-color: var(--color-border-hover); }
     }
     .step-card__num {
-      width: 36px; height: 36px; background: #1B2A4A; color: #fff;
+      width: 36px; height: 36px; background: var(--color-primary); color: #fff;
       border-radius: 4px; display: flex; align-items: center; justify-content: center;
       font-family: 'Source Serif 4', Georgia, serif; font-weight: 600; font-size: 16px; margin-bottom: 16px;
     }
-    .step-card__icon { font-size: 32px; margin-bottom: 12px; }
-    .step-card__title { font-size: 17px; font-weight: 700; color: #1B2A4A; margin-bottom: 8px; }
-    .step-card__desc { font-size: 14px; color: #4C5873; line-height: 1.6; }
+    .step-card__title { font-size: 17px; font-weight: 700; color: var(--color-primary); margin-bottom: 8px; }
+    .step-card__desc { font-size: 14px; color: var(--color-text-secondary); line-height: 1.6; }
 
     /* Benefits */
     .benefits-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 24px; }
     .benefit-card {
       border-radius: 6px; padding: 32px;
-      &--blue { background: #EEF1F6; border: 1px solid #C7CEDC; }
-      &--green { background: #EAF1EE; border: 1px solid #A9C4BB; }
+      &--blue { background: var(--color-primary-light); border: 1px solid var(--color-primary-muted); }
+      &--green { background: var(--color-success-light); border: 1px solid var(--color-success-border); }
     }
     .benefit-card__header { display: flex; align-items: center; gap: 14px; margin-bottom: 24px; }
     .benefit-card__icon {
-      width: 48px; height: 48px; background: #1B2A4A;
+      width: 48px; height: 48px; background: var(--color-primary);
       border-radius: 4px; display: flex; align-items: center; justify-content: center;
       font-size: 22px; flex-shrink: 0;
-      &--green { background: #2F5D50; }
+      &--green { background: var(--color-success); }
     }
-    .benefit-card__title { font-size: 18px; font-weight: 700; color: #1B2A4A; }
-    .benefit-card__sub { font-size: 13px; color: #4C5873; margin-top: 2px; }
+    .benefit-card__title { font-size: 18px; font-weight: 700; color: var(--color-primary); }
+    .benefit-card__sub { font-size: 13px; color: var(--color-text-secondary); margin-top: 2px; }
     .benefit-list { list-style: none; margin-bottom: 24px; display: flex; flex-direction: column; gap: 10px; }
-    .benefit-list__item { display: flex; align-items: flex-start; gap: 10px; font-size: 14px; color: #33405E; }
-    .benefit-list__check { font-weight: 700; margin-top: 1px;
-      &--blue { color: #1B2A4A; }
-      &--green { color: #2F5D50; }
+    .benefit-list__item { display: flex; align-items: flex-start; gap: 10px; font-size: 14px; color: var(--color-text-body); }
+    .benefit-list__check { margin-top: 4px; flex-shrink: 0;
+      &--blue { color: var(--color-primary); }
+      &--green { color: var(--color-success); }
     }
 
     /* CTA */
-    .cta-section { background: #2F5D50; padding: 80px 0; }
+    .cta-section { background: var(--color-success); padding: 80px 0; }
     .cta-section__inner { max-width: 680px; margin: 0 auto; padding: 0 24px; text-align: center; }
     .cta-section__title { font-family: 'Source Serif 4', Georgia, serif; font-size: 32px; font-weight: 600; color: #fff; margin-bottom: 14px; }
     .cta-section__desc { font-size: 17px; color: #CFE0D9; margin-bottom: 32px; line-height: 1.6; }
     .cta-section__btn {
-      background: #fff; color: #2F5D50; font-weight: 700;
+      background: #fff; color: var(--color-success); font-weight: 700;
       font-size: 16px; padding: 16px 36px; border-radius: 4px;
-      &:hover { background: #EAF1EE; }
+      &:hover { background: var(--color-success-light); }
     }
-    .cta-section__note { font-size: 12px; color: #A9C4BB; margin-top: 14px; }
+    .cta-section__note { font-size: 12px; color: var(--color-success-border); margin-top: 14px; }
 
     /* Footer */
-    .footer { background: #1B2A4A; padding: 40px 0; }
+    .footer { background: var(--color-primary); padding: 40px 0; }
     .footer__inner {
       max-width: 1100px; margin: 0 auto; padding: 0 24px;
       display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 16px;
@@ -303,9 +287,9 @@ export class LandingPageComponent {
   go(path: string) { this.router.navigateByUrl(path); }
 
   steps = [
-    { num: '1', icon: '📋', title: 'Solicite a substituição', desc: 'Informe disciplina, data, horário e nível de ensino. O sistema notifica professores disponíveis na sua região.' },
-    { num: '2', icon: '🔍', title: 'Encontre o professor ideal', desc: 'Veja perfis verificados, avaliações de outras escolas, experiência e compatibilidade com a sua necessidade.' },
-    { num: '3', icon: '✅', title: 'Confirme e acompanhe', desc: 'Envie o convite, receba a confirmação e acompanhe tudo pelo painel. Professor e escola recebem todos os detalhes.' },
+    { num: '1', title: 'Solicite a substituição', desc: 'Informe disciplina, data, horário e nível de ensino. O sistema notifica professores disponíveis na sua região.' },
+    { num: '2', title: 'Encontre o professor ideal', desc: 'Veja perfis verificados, avaliações de outras escolas, experiência e compatibilidade com a sua necessidade.' },
+    { num: '3', title: 'Confirme e acompanhe', desc: 'Envie o convite, receba a confirmação e acompanhe tudo pelo painel. Professor e escola recebem todos os detalhes.' },
   ];
 
   institutionBenefits = [

@@ -11,7 +11,7 @@ import { AppStateService } from './core/services/app-state.service';
     @if (state.loading()) { <div class="app-notice" role="status">Carregando dados…</div> }
     @if (state.error()) { <div class="app-notice app-notice--error" role="alert">{{state.error()}} <button (click)="state.retry()">Atualizar</button></div> }
     <router-outlet />`,
-  styles: [`.app-notice {padding:12px 20px;background:#EFF6FF;color:#1E40AF;font-size:14px}.app-notice button {margin-left:12px;text-decoration:underline}.app-notice--error {background:#FEF2F2;color:#991B1B}`],
+  styles: [`.app-notice {padding:12px 20px;background:var(--color-primary-light);color:var(--color-primary);font-size:14px}.app-notice button {margin-left:12px;text-decoration:underline}.app-notice--error {background:var(--color-danger-light);color:var(--color-danger)}`],
 })
 export class App {
   constructor(public state: AppStateService, private router: Router) {
