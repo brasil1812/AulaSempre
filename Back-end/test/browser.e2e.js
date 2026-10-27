@@ -26,7 +26,7 @@ test('browser: school and teacher complete the real database workflow, including
       await page.goto(base+'/entrar');await page.getByRole('button',{name:'Cadastre-se',exact:true}).click();
       await page.locator('[formcontrolname="name"]').fill(nome);await page.locator('[formcontrolname="email"]').fill(email);
       await page.locator('[formcontrolname="password"]').fill('Browser123!');await page.locator('[formcontrolname="city"]').fill('São Paulo');await page.locator('[formcontrolname="state"]').fill('SP');
-      await page.getByRole('button',{name:role==='ESCOLA'?'Sou uma escola':'Sou professor',exact:true}).click();
+      await page.getByRole('button',{name:role==='ESCOLA'?/Sou uma escola/:/Sou professor/,exact:false}).click();
       await page.getByRole('button',{name:'Criar conta',exact:true}).click();await page.waitForURL(base+(role==='ESCOLA'?'/instituicao':'/professor'));
     }
     await school.goto(base+'/instituicao/solicitacoes');await school.waitForURL(base+'/entrar');
