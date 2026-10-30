@@ -93,6 +93,13 @@ listas e painéis também consulta os dados atuais.
 - Escolas acessam suas próprias solicitações; professores alteram seu próprio perfil
   e respondem aos próprios convites. Contas desativadas perdem o acesso por token.
 
+## Domínio do Site no OnRender
+- Atualmente o site está rodando no OnRender, através do link abaixo.
+
+https://aulasempre.onrender.com/
+
+O primeiro acesso após um tempo pode demorar, visto que ele entre em hibernação com o não-uso.
+
 ## Testes
 
 Com o MySQL acessível e `Back-end/.env` configurado:
