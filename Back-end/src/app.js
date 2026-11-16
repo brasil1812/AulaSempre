@@ -16,6 +16,15 @@ import substituicaoRoutes from "./routes/substituicao.routes.js";
 const app = express();
 
 app.disable('x-powered-by');
+// Cabeçalhos de segurança. O HSTS só é enviado quando a requisição chegou por HTTPS
+// (no Render, o TLS termina na borda e a informação vem em X-Forwarded-Proto).
+app.use((req, res, next) => {
+  res.set('X-Content-Type-Options', 'nosniff');
+  res.set('X-Frame-Options', 'DENY');
+  res.set('Referrer-Policy', 'strict-origin-when-cross-origin');
+  if (req.secure || req.get('x-forwarded-proto') === 'https') res.set('Strict-Transport-Security', 'max-age=15552000');
+  next();
+});
 app.use(cors({ origin: process.env.CORS_ORIGIN === '*' ? '*' : (process.env.CORS_ORIGIN || 'http://localhost:4200').split(',').map(value => value.trim()) }));
 app.use(express.json({ limit: '100kb' }));
 

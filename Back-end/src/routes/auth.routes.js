@@ -5,6 +5,7 @@ import { pool } from '../database/connection.js';
 import { auth } from '../middlewares/auth.js';
 import { asyncHandler, httpError, transaction } from '../utils/http.js';
 import { text, choice, region } from '../utils/validation.js';
+import { blockedFor, registerFailure, registerSuccess } from '../utils/loginLimiter.js';
 const router = Router();
 function email(value) {
   const result = text(value, 'E-mail').toLowerCase();
@@ -14,8 +15,17 @@ function email(value) {
 router.post('/login', asyncHandler(async (req, res) => {
   const mail = email(req.body?.email);
   const password = text(req.body?.senha, 'Senha', 72);
+  const wait = blockedFor(mail);
+  if (wait) {
+    res.set('Retry-After', String(wait));
+    throw httpError(429, 'Muitas tentativas de login. Aguarde alguns minutos e tente novamente.');
+  }
   const [rows] = await pool.query('SELECT * FROM usuario WHERE email = ? AND ativo = 1 LIMIT 1', [mail]);
-  if (!rows.length || !await bcrypt.compare(password, rows[0].senha)) throw httpError(401, 'E-mail ou senha inválidos.');
+  if (!rows.length || !await bcrypt.compare(password, rows[0].senha)) {
+    registerFailure(mail);
+    throw httpError(401, 'E-mail ou senha inválidos.');
+  }
+  registerSuccess(mail);
   const { senha, ...usuario } = rows[0];
   const token = jwt.sign({ id_usuario: usuario.id_usuario }, process.env.JWT_SECRET, { expiresIn: '8h' });
   res.json({ token, usuario });
@@ -29,7 +39,7 @@ router.post('/cadastro', asyncHandler(async (req, res) => {
   const nome = text(body.nome, 'Nome');
   const mail = email(body.email);
   const senha = text(body.senha, 'Senha', 72);
-  if (senha.length < 6 || Buffer.byteLength(senha) > 72) throw httpError(400, 'A senha deve ter entre 6 e 72 bytes.');
+  if (senha.length < 8 || Buffer.byteLength(senha) > 72) throw httpError(400, 'A senha deve ter entre 8 caracteres e 72 bytes.');
   const tipo = choice(body.tipo_usuario, ['ESCOLA', 'PROFESSOR'], 'Tipo de usuário');
   if (body.id_escola != null) throw httpError(400, 'O cadastro público cria uma nova escola; não permite vincular contas a escolas existentes.');
   const cidade = text(body.cidade, 'Cidade', 100);

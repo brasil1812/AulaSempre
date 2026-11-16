@@ -63,12 +63,26 @@ test('real seed credentials authenticate and no password is returned',async()=>{
   assert.ok(result.token);assert.equal(result.usuario.senha,undefined);
 });
 test('registration validates input and prevents unauthorized school linkage and duplicates',async()=>{
-  const body={nome:'Teste',email:'novo@example.test',senha:'123456',tipo_usuario:'ESCOLA',cidade:'São Paulo',estado:'SP'};
+  const body={nome:'Teste',email:'novo@example.test',senha:'Teste1234',tipo_usuario:'ESCOLA',cidade:'São Paulo',estado:'SP'};
+  await request('/api/auth/cadastro',{method:'POST',body:{...body,senha:'1234567'},status:400});
   await request('/api/auth/cadastro',{method:'POST',body:{...body,id_escola:1},status:400});
   await request('/api/auth/cadastro',{method:'POST',body:{...body,email:'bad'},status:400});
   await request('/api/auth/cadastro',{method:'POST',body:{...body,estado:'XX'},status:400});
   await request('/api/auth/cadastro',{method:'POST',body:{...body,email:school.usuario.email},status:409});
   await request('/api/auth/login',{method:'POST',body:{email:school.usuario.email,senha:'wrong-password'},status:401});
+});
+test('login is blocked after repeated wrong passwords, even with the right one',async()=>{
+  const email='bloqueio@example.test',senha='Bloqueio123!';
+  await request('/api/auth/cadastro',{method:'POST',body:{nome:'Teste Bloqueio',email,senha,tipo_usuario:'PROFESSOR',cidade:'São Paulo',estado:'SP'},status:201});
+  for(let i=0;i<5;i++) await request('/api/auth/login',{method:'POST',body:{email,senha:'senha-errada'},status:401});
+  await request('/api/auth/login',{method:'POST',body:{email,senha},status:429});
+});
+test('security headers are sent and HSTS only behind HTTPS',async()=>{
+  const plain=await fetch(base+'/health');
+  assert.equal(plain.headers.get('x-content-type-options'),'nosniff');assert.equal(plain.headers.get('x-frame-options'),'DENY');
+  assert.equal(plain.headers.get('strict-transport-security'),null);
+  const secure=await fetch(base+'/health',{headers:{'X-Forwarded-Proto':'https'}});
+  assert.match(secure.headers.get('strict-transport-security')||'',/max-age=\d+/);
 });
 test('profile returns catalog relations and changes are atomic and owner restricted',async()=>{
   const list=await request('/api/professores',{token:school.token});const t=list.find(p=>p.id_professor===teachers[0].id);

@@ -71,7 +71,9 @@ incluindo as rotas internas acessadas diretamente.
 | Escola | renata.coord@colegiosaopaulo.com.br | AulaSempre123! |
 | Professor | lucas.matematica@gmail.com | AulaSempre123! |
 
-Essas contas pertencem à carga inicial de desenvolvimento. Também é possível
+Essas contas pertencem à carga inicial de desenvolvimento e valem **somente no
+ambiente local**: como a senha está publicada aqui, elas devem ficar desativadas no
+banco de produção (veja "Publicação no Render"). Também é possível
 criar contas pela tela de cadastro. Um professor novo deve preencher **Meu perfil**
 com disciplinas, níveis, horários e formações antes de aparecer nas buscas compatíveis.
 
@@ -99,6 +101,21 @@ listas e painéis também consulta os dados atuais.
 https://aulasempre.onrender.com/
 
 O primeiro acesso após um tempo pode demorar, visto que ele entre em hibernação com o não-uso.
+
+### Publicação no Render
+
+O Render emite o certificado TLS e redireciona HTTP para HTTPS automaticamente. A API
+envia HSTS e outros cabeçalhos de segurança quando a requisição chega por HTTPS.
+
+Variáveis de ambiente do serviço:
+
+| Variável | Uso |
+| --- | --- |
+| `JWT_SECRET` | Segredo aleatório com pelo menos 32 caracteres (a API não inicia sem ele). |
+| `LOGIN_MAX_FAILURES` / `LOGIN_WINDOW_MINUTES` | Opcional. Padrão: 5 senhas erradas bloqueiam o e-mail por 15 minutos. |
+
+As contas da carga inicial usam a senha publicada neste README. No banco de produção,
+desative-as com `Data-base/desativar-contas-demo.sql`.
 
 ## Testes
 
