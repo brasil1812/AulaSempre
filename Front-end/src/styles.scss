@@ -2,10 +2,10 @@
 
 // ── Color tokens ────────────────────────────────────────────
 :root {
-  --color-primary:       #1B2A4A; // navy-ink — documento/diploma
-  --color-primary-hover: #13203B;
-  --color-primary-light: #EEF1F6;
-  --color-primary-muted: #C7CEDC;
+  --color-primary:       #3F2A78; // violeta profundo, a cor da educação
+  --color-primary-hover: #2F1E5C;
+  --color-primary-light: #F0ECF8;
+  --color-primary-muted: #CFC6E6;
 
   --color-success:       #2F5D50; // verde-quadro-negro
   --color-success-light: #EAF1EE;
@@ -14,35 +14,35 @@
   --color-danger:        #9B3B34;
   --color-danger-light:  #F7EBE9;
 
-  --color-bg:            #F7F5F0;
+  --color-bg:            #F8F6FA;
   --color-surface:       #FFFFFF;
-  --color-border:        #DDD8CC;
-  --color-border-hover:  #C3BCAB;
+  --color-border:        #DDD8E6;
+  --color-border-hover:  #C4BCD6;
 
-  --color-text-primary:  #1B2A4A;
-  --color-text-secondary:#4C5873;
-  --color-text-muted:    #8A93A8;
-  --color-text-disabled: #C7CEDC;
-  --color-text-body:     #33405E; // texto corrido em fundos claros
-  --color-text-soft:     #6B7593;
+  --color-text-primary:  #2B2150;
+  --color-text-secondary:#4F4A6B;
+  --color-text-muted:    #8A86A3;
+  --color-text-disabled: #CFC6E6;
+  --color-text-body:     #3A3558; // texto corrido em fundos claros
+  --color-text-soft:     #6F6A8C;
 
   // Variações usadas em contornos e textos de apoio
   --color-success-border:#A9C4BB;
   --color-warning-border:#E4C691;
   --color-warning-dark:  #8A5A17;
   --color-danger-border: #DBB4AF;
-  --color-border-soft:   #EDEAE1;
-  --color-neutral-light: #F1EFE8;
+  --color-border-soft:   #ECE8F2;
+  --color-neutral-light: #F1EEF6;
 
   // ── Fontes ───────────────────────────────────────────────
   --font-display: 'Source Serif 4', Georgia, 'Times New Roman', serif;
   --font-body: 'Public Sans', system-ui, -apple-system, sans-serif;
 
   // ── Shadows (usadas com moderação — a identidade prioriza linhas finas) ──
-  --shadow-sm: 0 1px 2px rgba(27,42,74,.06);
-  --shadow:    0 1px 3px rgba(27,42,74,.08), 0 1px 2px rgba(27,42,74,.05);
-  --shadow-md: 0 4px 6px rgba(27,42,74,.06), 0 2px 4px rgba(27,42,74,.04);
-  --shadow-lg: 0 10px 20px rgba(27,42,74,.08), 0 4px 6px rgba(27,42,74,.04);
+  --shadow-sm: 0 1px 2px rgba(63,42,120,.06);
+  --shadow:    0 1px 3px rgba(63,42,120,.08), 0 1px 2px rgba(63,42,120,.05);
+  --shadow-md: 0 4px 6px rgba(63,42,120,.06), 0 2px 4px rgba(63,42,120,.04);
+  --shadow-lg: 0 10px 20px rgba(63,42,120,.08), 0 4px 6px rgba(63,42,120,.04);
 
   // ── Border radius (mais retos — ficha/registro, não card de SaaS) ──
   --radius-sm:  4px;
@@ -98,7 +98,7 @@ img { max-width: 100%; display: block; }
   &--aguardando{ background: var(--color-primary-light); color: var(--color-primary); border-color: var(--color-primary-muted); }
   &--confirmada{ background: var(--color-success-light); color: var(--color-success); border-color: #A9C4BB; }
   &--recusada  { background: var(--color-danger-light); color: var(--color-danger); border-color: #DBB4AF; }
-  &--concluida { background: #F1EFE8; color: var(--color-text-secondary); border-color: var(--color-border); }
+  &--concluida { background: #F1EEF6; color: var(--color-text-secondary); border-color: var(--color-border); }
   &--cancelada { background: var(--color-danger-light); color: var(--color-danger); border-color: #DBB4AF; }
 }
 
@@ -117,7 +117,7 @@ img { max-width: 100%; display: block; }
   &:hover  { border-color: var(--color-border-hover); }
   &:focus  {
     border-color: var(--color-primary);
-    box-shadow: 0 0 0 3px rgba(27,42,74,.12);
+    box-shadow: 0 0 0 3px rgba(63,42,120,.12);
   }
   &.is-error {
     border-color: var(--color-danger);

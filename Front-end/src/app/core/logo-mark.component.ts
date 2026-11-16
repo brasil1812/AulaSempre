@@ -1,5 +1,11 @@
 import { Component, Input } from '@angular/core';
 
+/**
+ * Símbolo do AulaSempre: um relógio cujo ponteiro dos minutos é um lápis.
+ * Tempo (a aula que continua) + escola (o lápis), nas cores do projeto.
+ * - bg: cor do relógio (navy por padrão; verde na área do professor)
+ * - onDark: versão clara, para fundos escuros
+ */
 @Component({
   selector: 'app-logo-mark',
   standalone: true,
@@ -18,6 +24,6 @@ import { Component, Input } from '@angular/core';
 })
 export class LogoMarkComponent {
   @Input() size = 32;
-  @Input() bg = '#1B2A4A';
+  @Input() bg = '#3F2A78';
   @Input() onDark = false;
 }

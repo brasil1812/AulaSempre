@@ -94,7 +94,7 @@ const COLOR_MAP: Record<string, string> = {
           <div class="empty-state">
             <div class="empty-state__icon"></div>
             <p class="empty-state__title">Nenhum professor encontrado</p>
-            <p class="empty-state__desc">Tente ajustar os filtros de busca.</p>
+            <p class="empty-state__desc">{{emptyHint()}}</p>
           </div>
         </div>
       } @else {
@@ -118,9 +118,9 @@ const COLOR_MAP: Record<string, string> = {
                 </div>
 
                 <div class="teacher-stats">
-                  <span class="stars-row">Nota <b>{{t.nota}}</b></span>
+                  @if (t.nota > 0) { <span class="stars-row">Nota <b>{{fmtNota(t.nota)}}</b></span> } @else { <span class="stars-row">Sem avaliações</span> }
                   <span>{{t.experiencia}} anos de experiência</span>
-                  <span>{{t.distancia}}</span>
+                  @if (t.distancia) { <span>{{t.distancia}}</span> }
                   <span>{{t.subs}} substituições</span>
                 </div>
 
@@ -233,6 +233,7 @@ export class SearchTeachersComponent {
 
   async loadMatches() {
     const id = this.selectedRequestId; this.matchIds.set(null); this.error.set(''); this.invitedId = null;
+    this.filterDisciplina = '';
     if (!id) { this.matching.set(false); return; }
     this.matching.set(true);
     try { const ids = await this.appState.compatibleTeachers(id); if (id === this.selectedRequestId) this.matchIds.set(ids); }
@@ -240,22 +241,33 @@ export class SearchTeachersComponent {
     finally { if (id === this.selectedRequestId) this.matching.set(false); }
   }
 
+  /** Remove acentos e maiúsculas, para "matematica" achar "Matemática" */
+  private norm(texto: string) {
+    return (texto || '').normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase();
+  }
+
+  /** Professores que podem aparecer: se há solicitação escolhida, só os compatíveis e que não recusaram */
+  private base(): Teacher[] {
+    const selectedReq = this.openRequests().find(r => r.id === this.selectedRequestId);
+    return this.appState.teachers.filter(t => {
+      if (!selectedReq) return true;
+      if (!this.matchIds()?.includes(t.id)) return false;
+      return !selectedReq.recusadoPorIds.includes(t.id);
+    });
+  }
+
+  /** A lista do filtro mostra só as disciplinas de quem está na lista, evitando escolhas que dão zero resultados */
   allDisciplinas() {
-    return Array.from(new Set(this.appState.teachers.flatMap(t => t.disciplinas))).sort();
+    return Array.from(new Set(this.base().flatMap(t => t.disciplinas))).sort((a, b) => a.localeCompare(b, 'pt-BR'));
   }
 
   filtered(): Teacher[] {
-    const selectedReq = this.openRequests().find(r => r.id === this.selectedRequestId);
-    return this.appState.teachers
+    const busca = this.norm(this.search.trim());
+    return this.base()
       .filter(t => {
-        if (selectedReq && !this.matchIds()?.includes(t.id)) return false;
         if (this.filterAvail && !t.disponivel) return false;
         if (this.filterDisciplina && !t.disciplinas.includes(this.filterDisciplina)) return false;
-        if (this.search) {
-          const s = this.search.toLowerCase();
-          if (!t.nome.toLowerCase().includes(s) && !t.disciplinas.join(' ').toLowerCase().includes(s)) return false;
-        }
-        if (selectedReq && selectedReq.recusadoPorIds.includes(t.id)) return false;
+        if (busca && !this.norm(t.nome).includes(busca) && !this.norm(t.disciplinas.join(' ')).includes(busca)) return false;
         return true;
       })
       .sort((a, b) => {
@@ -263,6 +275,16 @@ export class SearchTeachersComponent {
         if (this.sortBy === 'subs') return b.subs - a.subs;
         return b.experiencia - a.experiencia;
       });
+  }
+
+  fmtNota(n: number) { return n.toFixed(1).replace('.', ','); }
+
+  emptyHint() {
+    const filtrando = !!(this.search.trim() || this.filterDisciplina || this.filterAvail);
+    if (this.selectedRequestId && !filtrando) {
+      return 'Nenhum professor atende a esta solicitação no horário, local e requisitos pedidos. Ajuste a data, o horário ou os requisitos.';
+    }
+    return 'Tente ajustar os filtros de busca.';
   }
 
   isInvited(id: string) {

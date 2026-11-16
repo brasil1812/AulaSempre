@@ -165,7 +165,7 @@ import { InViewDirective } from '../../../core/in-view.directive';
     /* ── Menu ──────────────────────────────────────────────── */
     .landing-nav {
       position: sticky; top: 0; z-index: 40;
-      background: rgba(247,245,240,.92); backdrop-filter: blur(10px);
+      background: rgba(248,246,250,.92); backdrop-filter: blur(10px);
       border-bottom: 1px solid var(--color-border);
     }
     .landing-nav__inner {
@@ -182,7 +182,7 @@ import { InViewDirective } from '../../../core/in-view.directive';
       position: relative; overflow: hidden;
       background:
         linear-gradient(90deg, transparent 47px, rgba(185,126,36,.55) 47px, rgba(185,126,36,.55) 49px, transparent 49px),
-        repeating-linear-gradient(180deg, transparent 0 35px, rgba(27,42,74,.07) 35px 36px),
+        repeating-linear-gradient(180deg, transparent 0 35px, rgba(63,42,120,.07) 35px 36px),
         var(--color-bg);
     }
     .hero__inner {
@@ -292,7 +292,7 @@ import { InViewDirective } from '../../../core/in-view.directive';
     .who__item {
       display: flex; align-items: flex-start; gap: 12px; font-size: 15px; color: var(--color-text-body);
       padding: 8px 10px; margin-left: -10px; border-radius: 4px; transition: background .2s ease;
-      &:hover { background: rgba(27,42,74,.05); }
+      &:hover { background: rgba(63,42,120,.05); }
       &:hover .who__check { transform: rotate(-45deg) scale(1.25); }
     }
     .who__check { margin-top: 7px; flex-shrink: 0; color: var(--color-primary); transition: transform .25s cubic-bezier(.3,1.5,.5,1); }
@@ -321,15 +321,15 @@ import { InViewDirective } from '../../../core/in-view.directive';
     }
     .footer__logo-text { font-family: var(--font-display); font-size: 16px; font-weight: 600; color: #fff; }
     .footer__logo-accent { color: #D7B687; }
-    .footer__copy { font-size: 13px; color: #8E9AB8; }
+    .footer__copy { font-size: 13px; color: #B3AACB; }
     .footer__links { display: flex; gap: 24px; }
-    .footer__links button { font-size: 13px; color: #8E9AB8; transition: color .15s; }
+    .footer__links button { font-size: 13px; color: #B3AACB; transition: color .15s; }
     .footer__links button:hover { color: #fff; }
 
     /* ── Telas pequenas ────────────────────────────────────── */
     @media (max-width: 860px) {
       .hero { background:
-        repeating-linear-gradient(180deg, transparent 0 35px, rgba(27,42,74,.07) 35px 36px), var(--color-bg); }
+        repeating-linear-gradient(180deg, transparent 0 35px, rgba(63,42,120,.07) 35px 36px), var(--color-bg); }
       .hero__inner { grid-template-columns: 1fr; padding: 56px 24px 64px; gap: 44px; }
       .board { transform: none; animation-name: heroIn; }
       .how { grid-template-columns: 1fr; gap: 32px; }

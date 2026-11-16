@@ -162,7 +162,7 @@ type View = 'login' | 'register';
     }
     @media(min-width: 768px) { .login-left { display: flex; } }
     .login-left__photo { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; opacity: .35; }
-    .login-left__overlay { position: absolute; inset: 0; background: linear-gradient(to bottom, rgba(27,42,74,.7), rgba(27,42,74,.35), rgba(27,42,74,.8)); }
+    .login-left__overlay { position: absolute; inset: 0; background: linear-gradient(to bottom, rgba(63,42,120,.7), rgba(63,42,120,.35), rgba(63,42,120,.8)); }
     .login-left__top, .login-left__bottom { position: relative; z-index: 1; }
     .login-left__quote { font-family: 'Source Serif 4', Georgia, serif; font-size: clamp(22px, 2.5vw, 30px); font-weight: 600; color: #fff; line-height: 1.3; margin-bottom: 10px; }
     .login-left__sub { font-size: 14px; color: var(--color-primary-muted); line-height: 1.6; max-width: 300px; }
