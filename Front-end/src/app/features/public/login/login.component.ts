@@ -126,7 +126,7 @@ type View = 'login' | 'register';
         <form [formGroup]="registerForm" (ngSubmit)="handleRegister()" class="login-form">
           <div class="field"><label class="form-label">Nome</label><input class="form-input" formControlName="name" placeholder="Seu nome ou nome da escola" /></div>
           <div class="field"><label class="form-label">E-mail</label><input class="form-input" type="email" formControlName="email" placeholder="voce@exemplo.com" /></div>
-          <div class="field"><label class="form-label">Senha</label><input class="form-input" type="password" formControlName="password" placeholder="Mínimo de 6 caracteres" /></div>
+          <div class="field"><label class="form-label">Senha</label><input class="form-input" type="password" formControlName="password" placeholder="Mínimo de 8 caracteres" /></div>
           <div class="field"><label class="form-label">Cidade</label><input class="form-input" formControlName="city" placeholder="São Paulo" /></div>
           <div class="field"><label class="form-label">Estado</label><input class="form-input" formControlName="state" maxlength="2" placeholder="SP" /></div>
           <div class="field"><label class="form-label">Telefone</label><input class="form-input" formControlName="phone" placeholder="(11) 99999-9999" /></div>
@@ -268,7 +268,7 @@ export class LoginComponent {
     this.registerForm = this.fb.group({
       name: ['', [Validators.required, Validators.minLength(2)]],
       email: ['', [Validators.required, Validators.email]],
-      password: ['', [Validators.required, Validators.minLength(6)]],
+      password: ['', [Validators.required, Validators.minLength(8)]],
       role: ['PROFESSOR', Validators.required],
       city: ['', Validators.required],
       state: ['', [Validators.required, Validators.minLength(2), Validators.maxLength(2)]],
@@ -329,6 +329,7 @@ export class LoginComponent {
     this.registerError.set('');
     if (this.registerForm.invalid) {
       this.registerForm.markAllAsTouched();
+      if (this.registerForm.get('password')?.errors?.['minlength']) this.registerError.set('A senha precisa ter pelo menos 8 caracteres.');
       return;
     }
     this.registerLoading.set(true);
